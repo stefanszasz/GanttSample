@@ -6,41 +6,10 @@ namespace GanttSample
 {
     public class GanttRowPanel : Panel
     {
-        public static readonly DependencyProperty StartDateProperty =
-            DependencyProperty.RegisterAttached("StartDate", typeof(DateTime), typeof(GanttRowPanel), new FrameworkPropertyMetadata(DateTime.MinValue, FrameworkPropertyMetadataOptions.AffectsParentArrange));
-        public static readonly DependencyProperty EndDateProperty =
-            DependencyProperty.RegisterAttached("EndDate", typeof(DateTime), typeof(GanttRowPanel), new FrameworkPropertyMetadata(DateTime.MaxValue, FrameworkPropertyMetadataOptions.AffectsParentArrange, OnEndDateChanged));
-
-        private static void OnEndDateChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var item = (GanttItem) d;
-        }
-
         public static readonly DependencyProperty MaxDateProperty =
-            DependencyProperty.Register("MaxDate", typeof(DateTime), typeof(GanttRowPanel), new FrameworkPropertyMetadata(DateTime.MaxValue, FrameworkPropertyMetadataOptions.AffectsMeasure));
+            DependencyProperty.Register("MaxDate", typeof(DateTime), typeof(GanttRowPanel), new FrameworkPropertyMetadata(DateTime.Now.AddHours(12), FrameworkPropertyMetadataOptions.AffectsMeasure));
         public static readonly DependencyProperty MinDateProperty =
-            DependencyProperty.Register("MinDate", typeof(DateTime), typeof(GanttRowPanel), new FrameworkPropertyMetadata(DateTime.MaxValue, FrameworkPropertyMetadataOptions.AffectsMeasure));
-
-
-        public static DateTime GetStartDate(DependencyObject obj)
-        {
-            return (DateTime)obj.GetValue(StartDateProperty);
-        }
-
-        public static void SetStartDate(DependencyObject obj, DateTime value)
-        {
-            obj.SetValue(StartDateProperty, value);
-        }
-
-        public static DateTime GetEndDate(DependencyObject obj)
-        {
-            return (DateTime)obj.GetValue(EndDateProperty);
-        }
-
-        public static void SetEndDate(DependencyObject obj, DateTime value)
-        {
-            obj.SetValue(EndDateProperty, value);
-        }
+            DependencyProperty.Register("MinDate", typeof(DateTime), typeof(GanttRowPanel), new FrameworkPropertyMetadata(DateTime.Now.AddHours(-12), FrameworkPropertyMetadataOptions.AffectsMeasure));
 
         public DateTime MaxDate
         {
@@ -61,7 +30,7 @@ namespace GanttSample
                 child.Measure(availableSize);
             }
 
-            return new Size(0,0);
+            return new Size(0, 0);
         }
 
         protected override Size ArrangeOverride(Size finalSize)
@@ -80,13 +49,15 @@ namespace GanttSample
         private void ArrangeChild(GanttItem child, DateTime minDate, double pixelsPerTick, double elementHeight)
         {
             DateTime childStartDate = child.StartDate;
-            DateTime childEndDate = GetEndDate(child);
+            DateTime childEndDate = child.EndDate;
             TimeSpan childDuration = childEndDate - childStartDate;
 
             double offset = (childStartDate - minDate).Ticks * pixelsPerTick;
             double width = childDuration.Ticks * pixelsPerTick;
 
-            child.Arrange(new Rect(offset, 0, width, elementHeight));
+            int y = 22 * child.Order;
+            var finalRect = new Rect(offset, 5 + y, width, elementHeight);
+            child.Arrange(finalRect);
         }
     }
 }

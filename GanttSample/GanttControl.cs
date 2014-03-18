@@ -1,19 +1,20 @@
+﻿using System.Collections;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
 namespace GanttSample
 {
-    public class GanttControl : ItemsControl
+    class GanttControl : ItemsControl
     {
-        //protected override DependencyObject GetContainerForItemOverride()
-        //{
-        //    return new GanttItem();
-        //}
+        protected override DependencyObject GetContainerForItemOverride()
+        {
+            return new GanttItem();
+        }
 
-        //protected override void PrepareContainerForItemOverride(DependencyObject element, object item)
-        //{
-        //    var ganttItem = (GanttItem)element;
-        //    ganttItem.DataContext = item;
-        //}
+        protected override void OnItemsSourceChanged(IEnumerable oldValue, IEnumerable newValue)
+        {
+            base.OnItemsSourceChanged(oldValue, newValue);            
+        }
     }
 }

@@ -7,6 +7,8 @@ namespace GanttSample
 {
     public class GanttItem : Control
     {
+        public readonly Guid Id;
+
         public static readonly DependencyProperty ColorProperty = DependencyProperty.Register(
             "Color", typeof(Brush), typeof(GanttItem), new PropertyMetadata(default(Brush)));
 
@@ -17,7 +19,7 @@ namespace GanttSample
         }
 
         public static readonly DependencyProperty StartDateProperty = DependencyProperty.Register(
-            "StartDate", typeof(DateTime), typeof(GanttItem), new PropertyMetadata(default(DateTime), OnStartDateChanged));
+            "StartDate", typeof(DateTime), typeof(GanttItem), new PropertyMetadata(default(DateTime)));
 
         public DateTime StartDate
         {
@@ -25,24 +27,13 @@ namespace GanttSample
             set { SetValue(StartDateProperty, value); }
         }
 
-        private static void OnStartDateChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            GanttItem item = d as GanttItem;
-            GanttRowPanel.SetStartDate(item, item.StartDate);
-        }
-
         public static readonly DependencyProperty EndDateProperty = DependencyProperty.Register(
-            "EndDate", typeof(DateTime), typeof(GanttItem), new PropertyMetadata(default(DateTime), OnEndDateChanged));
-
-        private static void OnEndDateChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            GanttItem item = d as GanttItem;
-            GanttRowPanel.SetEndDate(item, item.EndDate);
-        }
+            "EndDate", typeof(DateTime), typeof(GanttItem), new PropertyMetadata(default(DateTime)));
 
         public GanttItem()
         {
-            DefaultStyleKey = typeof (GanttItem);
+            DefaultStyleKey = typeof(GanttItem);
+            Id = Guid.NewGuid();
         }
 
         public DateTime EndDate
@@ -51,10 +42,28 @@ namespace GanttSample
             set { SetValue(EndDateProperty, value); }
         }
 
-        //protected override void OnRender(DrawingContext drawingContext)
-        //{
-        //    drawingContext.DrawRectangle(Color, null,
-        //        new Rect(0, 0, RenderSize.Width, RenderSize.Height));
-        //}
+        public static readonly DependencyProperty TextProperty = DependencyProperty.Register(
+            "Text", typeof(string), typeof(GanttItem), new PropertyMetadata(default(string)));
+
+
+        public string Text
+        {
+            get { return (string)GetValue(TextProperty); }
+            set { SetValue(TextProperty, value); }
+        }
+
+        public static readonly DependencyProperty OrderProperty = DependencyProperty.Register(
+            "Order", typeof (int), typeof (GanttItem), new PropertyMetadata(default(int)));
+
+        public int Order
+        {
+            get { return (int) GetValue(OrderProperty); }
+            set { SetValue(OrderProperty, value); }
+        }
+
+        public override string ToString()
+        {
+            return string.Format("{0}, StartDate: {1}, EndDate: {2}, Text: {3}", base.ToString(), StartDate, EndDate, Text);
+        }
     }
 }
