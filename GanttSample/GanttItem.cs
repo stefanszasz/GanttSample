@@ -1,11 +1,12 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 
 namespace GanttSample
 {
-    public class GanttItem : Control
+    public class GanttItem : ListBoxItem
     {
         public readonly Guid Id;
 
@@ -30,12 +31,6 @@ namespace GanttSample
         public static readonly DependencyProperty EndDateProperty = DependencyProperty.Register(
             "EndDate", typeof(DateTime), typeof(GanttItem), new PropertyMetadata(default(DateTime)));
 
-        public GanttItem()
-        {
-            DefaultStyleKey = typeof(GanttItem);
-            Id = Guid.NewGuid();
-        }
-
         public DateTime EndDate
         {
             get { return (DateTime)GetValue(EndDateProperty); }
@@ -53,12 +48,25 @@ namespace GanttSample
         }
 
         public static readonly DependencyProperty OrderProperty = DependencyProperty.Register(
-            "Order", typeof (int), typeof (GanttItem), new PropertyMetadata(default(int)));
+            "Order", typeof(int), typeof(GanttItem), new PropertyMetadata(default(int)));
 
         public int Order
         {
-            get { return (int) GetValue(OrderProperty); }
+            get { return (int)GetValue(OrderProperty); }
             set { SetValue(OrderProperty, value); }
+        }
+
+        public GanttItem()
+        {
+            DefaultStyleKey = typeof(GanttItem);
+            Id = Guid.NewGuid();
+            MouseLeftButtonDown += GanttItem_MouseLeftButtonDown;
+        }
+
+        void GanttItem_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            Selector.SetIsSelected(this, true);                     
+            IsSelected = true;
         }
 
         public override string ToString()

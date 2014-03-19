@@ -1,6 +1,7 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace GanttSample
 {
@@ -23,9 +24,14 @@ namespace GanttSample
             set { SetValue(MinDateProperty, value); }
         }
 
+        public GanttRowPanel()
+        {
+            Background = new SolidColorBrush(Colors.SeaShell);
+        }
+
         protected override Size MeasureOverride(Size availableSize)
         {
-            foreach (UIElement child in Children)
+            foreach (GanttItem child in Children)
             {
                 child.Measure(availableSize);
             }
@@ -40,13 +46,14 @@ namespace GanttSample
 
             foreach (GanttItem child in Children)
             {
-                ArrangeChild(child, MinDate, pixelsPerTick, finalSize.Height);
+                Rect rect = ArrangeChild(child, MinDate, pixelsPerTick, finalSize.Height);
+                ArrangeGanttItem(child, rect);
             }
 
-            return finalSize;
+            return new Size(500, 500);
         }
 
-        private void ArrangeChild(GanttItem child, DateTime minDate, double pixelsPerTick, double elementHeight)
+        private Rect ArrangeChild(GanttItem child, DateTime minDate, double pixelsPerTick, double elementHeight)
         {
             DateTime childStartDate = child.StartDate;
             DateTime childEndDate = child.EndDate;
@@ -55,9 +62,14 @@ namespace GanttSample
             double offset = (childStartDate - minDate).Ticks * pixelsPerTick;
             double width = childDuration.Ticks * pixelsPerTick;
 
-            int y = 22 * child.Order;
-            var finalRect = new Rect(offset, 5 + y, width, elementHeight);
-            child.Arrange(finalRect);
+            double y = child.DesiredSize.Height * child.Order;
+            var finalRect = new Rect(offset, y, width, elementHeight);
+            return finalRect;
+        }
+
+        void ArrangeGanttItem(GanttItem ganttItem, Rect rect)
+        {
+            ganttItem.Arrange(rect);
         }
     }
 }

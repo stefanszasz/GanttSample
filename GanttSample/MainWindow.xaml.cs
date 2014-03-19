@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 
 namespace GanttSample
@@ -59,22 +60,7 @@ namespace GanttSample
                 Color = Brushes.Green
             });
 
-            RecalculateOrder(observableCollection);
             GanttControl.ItemsSource = observableCollection;
-        }
-
-        void RecalculateOrder(IEnumerable<Process> items)
-        {
-            var enumerable = items as Process[] ?? items.ToArray();
-            foreach (Process ganttItem in enumerable.OrderBy(x => x.StartDate))
-            {
-                var intersectedItems = ganttItem.IntersectsWith(enumerable);
-
-                foreach (var intersectedItem in intersectedItems)
-                {
-                    intersectedItem.Order++;
-                }
-            }
         }
 
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
@@ -85,7 +71,7 @@ namespace GanttSample
                 EndDate = DateTime.Now.AddHours(3),
                 Text = DateTime.Now.ToString("t")
             });
-            RecalculateOrder(observableCollection);
+
         }
     }
 }

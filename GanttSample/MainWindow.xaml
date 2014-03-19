@@ -6,27 +6,33 @@
         Title="MainWindow"
         Height="350"
         Width="525">
-    <Control.Resources>
-    </Control.Resources>
+    <Control.Resources></Control.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition />
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <ganttSample:GanttControl x:Name="GanttControl">
             <ganttSample:GanttControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <ganttSample:GanttRowPanel />
+                    <ganttSample:GanttRowPanel/>
                 </ItemsPanelTemplate>
             </ganttSample:GanttControl.ItemsPanel>
+            <ganttSample:GanttControl.Template>
+                <ControlTemplate>
+                    <ScrollViewer x:Name="ScrollViewer"
+                                  VerticalScrollBarVisibility="Visible"
+                                  HorizontalScrollBarVisibility="Visible">
+                        <ItemsPresenter />
+                    </ScrollViewer>
+                </ControlTemplate>
+            </ganttSample:GanttControl.Template>
             <ganttSample:GanttControl.ItemContainerStyle>
                 <Style TargetType="ganttSample:GanttItem">
                     <Setter Property="VerticalAlignment"
                             Value="Top" />
                     <Setter Property="Background"
                             Value="{Binding Color}" />
-                    <Setter Property="Order"
-                            Value="{Binding Order}" />
                     <Setter Property="Text"
                             Value="{Binding Text}" />
                     <Setter Property="StartDate"
@@ -40,15 +46,27 @@
                             <ControlTemplate TargetType="{x:Type ganttSample:GanttItem}">
                                 <Border Background="{TemplateBinding Background}"
                                         Height="22"
+                                        x:Name="Border"
                                         ToolTip="{TemplateBinding ToolTip}">
                                     <TextBlock Text="{TemplateBinding Text}" />
                                 </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsSelected"
+                                             Value="True">
+                                        <Trigger.Setters>
+                                            <Setter Property="Background"
+                                                    TargetName="Border"
+                                                    Value="Transparent" />
+                                        </Trigger.Setters>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
                             </ControlTemplate>
                         </Setter.Value>
                     </Setter>
                 </Style>
             </ganttSample:GanttControl.ItemContainerStyle>
         </ganttSample:GanttControl>
-        <Button Grid.Row="1" Click="ButtonBase_OnClick">Add</Button>
+        <Button Grid.Row="1"
+                Click="ButtonBase_OnClick">Add</Button>
     </Grid>
 </Window>
