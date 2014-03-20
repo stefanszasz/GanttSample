@@ -10,10 +10,12 @@ namespace GanttSample
         public string Text { get; set; }
         public string Hint { get; set; }
         public Brush Color { get; set; }
+        public bool IsItemVisible { get; set; }
 
         public Process()
         {
             Color = new SolidColorBrush(Colors.DeepPink);
+            IsItemVisible = true;
         }
 
         public override string ToString()

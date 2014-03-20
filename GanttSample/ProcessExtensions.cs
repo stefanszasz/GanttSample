@@ -8,7 +8,7 @@ namespace GanttSample
     {
         public static IEnumerable<GanttItem> IntersectsWith(this GanttItem processItem, IEnumerable<GanttItem> items)
         {
-            foreach (GanttItem item in items.Where(x => x.StartDate > processItem.StartDate))
+            foreach (GanttItem item in items)
             {
                 if (item.Equals(processItem)) continue;
                 bool intersects = processItem.StartDate < item.EndDate && item.StartDate < processItem.EndDate;

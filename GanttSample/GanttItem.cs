@@ -56,6 +56,15 @@ namespace GanttSample
             set { SetValue(OrderProperty, value); }
         }
 
+        public static readonly DependencyProperty IsItemVisibleProperty = DependencyProperty.Register(
+            "IsItemVisible", typeof (bool), typeof (GanttItem), new FrameworkPropertyMetadata(true, FrameworkPropertyMetadataOptions.AffectsMeasure));
+
+        public bool IsItemVisible
+        {
+            get { return (bool) GetValue(IsItemVisibleProperty); }
+            set { SetValue(IsItemVisibleProperty, value); }
+        }
+
         public GanttItem()
         {
             DefaultStyleKey = typeof(GanttItem);

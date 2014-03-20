@@ -1,16 +1,17 @@
 using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
 
 namespace GanttSample
 {
     public class GanttRowPanel : Panel
     {
         public static readonly DependencyProperty MaxDateProperty =
-            DependencyProperty.Register("MaxDate", typeof(DateTime), typeof(GanttRowPanel), new FrameworkPropertyMetadata(DateTime.Now.AddHours(12), FrameworkPropertyMetadataOptions.AffectsMeasure));
+            DependencyProperty.Register("MaxDate", typeof(DateTime), typeof(GanttRowPanel), new FrameworkPropertyMetadata(DateTime.Now.AddDays(0), FrameworkPropertyMetadataOptions.AffectsMeasure));
+
         public static readonly DependencyProperty MinDateProperty =
-            DependencyProperty.Register("MinDate", typeof(DateTime), typeof(GanttRowPanel), new FrameworkPropertyMetadata(DateTime.Now.AddHours(-12), FrameworkPropertyMetadataOptions.AffectsMeasure));
+            DependencyProperty.Register("MinDate", typeof(DateTime), typeof(GanttRowPanel), new FrameworkPropertyMetadata(DateTime.Now.AddHours(0), FrameworkPropertyMetadataOptions.AffectsMeasure));
 
         public DateTime MaxDate
         {
@@ -24,19 +25,21 @@ namespace GanttSample
             set { SetValue(MinDateProperty, value); }
         }
 
-        public GanttRowPanel()
-        {
-            Background = new SolidColorBrush(Colors.SeaShell);
-        }
-
         protected override Size MeasureOverride(Size availableSize)
         {
-            foreach (GanttItem child in Children)
+            double maxHeight = 0;
+            double desiredHeight = 0;
+
+            foreach (GanttItem child in Children.OfType<GanttItem>().Where(x => x.IsItemVisible))
             {
                 child.Measure(availableSize);
+                desiredHeight = child.DesiredSize.Height;
+                double height = child.DesiredSize.Height * child.Order;
+                if (height > maxHeight)
+                    maxHeight = height;
             }
 
-            return new Size(0, 0);
+            return new Size(0, maxHeight + desiredHeight + 50);
         }
 
         protected override Size ArrangeOverride(Size finalSize)
@@ -44,13 +47,13 @@ namespace GanttSample
             double range = (MaxDate - MinDate).Ticks;
             double pixelsPerTick = finalSize.Width / range;
 
-            foreach (GanttItem child in Children)
+            foreach (GanttItem child in Children.OfType<GanttItem>().Where(x => x.IsItemVisible))
             {
                 Rect rect = ArrangeChild(child, MinDate, pixelsPerTick, finalSize.Height);
-                ArrangeGanttItem(child, rect);
+                child.Arrange(rect);
             }
 
-            return new Size(500, 500);
+            return finalSize;
         }
 
         private Rect ArrangeChild(GanttItem child, DateTime minDate, double pixelsPerTick, double elementHeight)
@@ -63,13 +66,14 @@ namespace GanttSample
             double width = childDuration.Ticks * pixelsPerTick;
 
             double y = child.DesiredSize.Height * child.Order;
-            var finalRect = new Rect(offset, y, width, elementHeight);
-            return finalRect;
-        }
+            if (offset < 0)
+                offset = 0;
 
-        void ArrangeGanttItem(GanttItem ganttItem, Rect rect)
-        {
-            ganttItem.Arrange(rect);
+            if (width < 0)
+                width = 0;
+
+            var finalRect = new Rect(offset, y + 50, width, elementHeight);
+            return finalRect;
         }
     }
 }
