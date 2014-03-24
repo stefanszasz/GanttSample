@@ -11,6 +11,7 @@ namespace GanttSample
         public string Hint { get; set; }
         public Brush Color { get; set; }
         public bool IsItemVisible { get; set; }
+        public string GroupName { get; set; }
 
         public Process()
         {

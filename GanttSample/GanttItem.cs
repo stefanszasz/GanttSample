@@ -62,6 +62,15 @@ namespace GanttSample
             set { SetValue(IsItemVisibleProperty, value); }
         }
 
+        public static readonly DependencyProperty GroupNameProperty = DependencyProperty.Register(
+            "GroupName", typeof (string), typeof (GanttItem), new PropertyMetadata(default(string)));
+
+        public string GroupName
+        {
+            get { return (string) GetValue(GroupNameProperty); }
+            set { SetValue(GroupNameProperty, value); }
+        }
+
         public GanttItem()
         {
             DefaultStyleKey = typeof(GanttItem);

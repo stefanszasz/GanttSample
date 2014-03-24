@@ -74,6 +74,8 @@
                             Value="{Binding Color}" />
                     <Setter Property="Text"
                             Value="{Binding Text}" />
+                    <Setter Property="GroupName"
+                            Value="{Binding GroupName}" />
                     <Setter Property="StartDate"
                             Value="{Binding StartDate}" />
                     <Setter Property="EndDate"

@@ -32,5 +32,19 @@ namespace GanttSample
             get { return (string)GetValue(HeaderProperty); }
             set { SetValue(HeaderProperty, value); }
         }
+
+        public static readonly DependencyProperty OrderProperty = DependencyProperty.Register(
+            "Order", typeof(int), typeof(GanttItem), new PropertyMetadata(default(int)));
+
+        public int Order
+        {
+            get { return (int)GetValue(OrderProperty); }
+            set { SetValue(OrderProperty, value); }
+        }
+
+        public GanttGroupItem()
+        {
+            DefaultStyleKey = typeof(GanttGroupItem);
+        }
     }
 }

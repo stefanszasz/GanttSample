@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -30,13 +31,17 @@ namespace GanttSample
             double maxHeight = 0;
             double desiredHeight = 0;
 
-            foreach (GanttItem child in Children.OfType<GanttItem>().Where(x => x.IsItemVisible))
+            var ganttItems = Children.OfType<GanttItem>().Where(x => x.IsItemVisible);
+            foreach (var groupedItems in ganttItems.GroupBy(x => x.GroupName))
             {
-                child.Measure(availableSize);
-                desiredHeight = child.DesiredSize.Height;
-                double height = child.DesiredSize.Height * child.Order;
-                if (height > maxHeight)
-                    maxHeight = height;
+                foreach (var ganttItem in groupedItems)
+                {
+                    ganttItem.Measure(availableSize);
+                    desiredHeight = ganttItem.DesiredSize.Height;
+                    double height = ganttItem.DesiredSize.Height * ganttItem.Order;
+                    if (height > maxHeight)
+                        maxHeight = height;
+                }
             }
 
             return new Size(0, maxHeight + desiredHeight + 50);
@@ -47,10 +52,14 @@ namespace GanttSample
             double range = (MaxDate - MinDate).Ticks;
             double pixelsPerTick = finalSize.Width / range;
 
-            foreach (GanttItem child in Children.OfType<GanttItem>().Where(x => x.IsItemVisible))
+            var ganttItems = Children.OfType<GanttItem>().Where(x => x.IsItemVisible);
+            foreach (var groupedItems in ganttItems.GroupBy(x => x.GroupName))
             {
-                Rect rect = ArrangeChild(child, MinDate, pixelsPerTick, finalSize.Height);
-                child.Arrange(rect);
+                foreach (var ganttItem in groupedItems)
+                {
+                    Rect rect = ArrangeChild(ganttItem, MinDate, pixelsPerTick, finalSize.Height);
+                    ganttItem.Arrange(rect);
+                }
             }
 
             return finalSize;

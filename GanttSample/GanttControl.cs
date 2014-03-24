@@ -31,6 +31,15 @@ namespace GanttSample
             set { SetValue(MinDateProperty, value); }
         }
 
+        public static readonly DependencyProperty ShowDateTimeLinesProperty = DependencyProperty.Register(
+            "ShowDateTimeLines", typeof (bool), typeof (GanttControl), new PropertyMetadata(true));
+
+        public bool ShowDateTimeLines
+        {
+            get { return (bool) GetValue(ShowDateTimeLinesProperty); }
+            set { SetValue(ShowDateTimeLinesProperty, value); }
+        }
+
         private Canvas canvas;
 
         public static readonly DependencyProperty DateFormatProperty = DependencyProperty.Register(
@@ -98,6 +107,12 @@ namespace GanttSample
 
         void FillBackground(Size size)
         {
+            if (ShowDateTimeLines == false)
+            {
+                canvas.Visibility = Visibility.Collapsed;
+                return;
+            }
+
             double range = (MaxDate - MinDate).Ticks;
             double pixelsPerTick = size.Width / range;
             const int timeSliceMinutes = 15;
