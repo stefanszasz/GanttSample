@@ -4,10 +4,10 @@ using System.Windows.Controls;
 
 namespace GanttSample
 {
-    public class GanttGroupItem : Control
+    public class GanttGroupItem : ListBoxItem
     {
         public static readonly DependencyProperty StartDateProperty = DependencyProperty.Register(
-            "StartDate", typeof(DateTime), typeof(GanttGroupItem), new PropertyMetadata(default(DateTime)));
+            "StartDate", typeof(DateTime), typeof(GanttItem), new PropertyMetadata(default(DateTime)));
 
         public DateTime StartDate
         {
@@ -16,7 +16,7 @@ namespace GanttSample
         }
 
         public static readonly DependencyProperty EndDateProperty = DependencyProperty.Register(
-            "EndDate", typeof(DateTime), typeof(GanttGroupItem), new PropertyMetadata(default(DateTime)));
+            "EndDate", typeof(DateTime), typeof(GanttItem), new PropertyMetadata(default(DateTime)));
 
         public DateTime EndDate
         {

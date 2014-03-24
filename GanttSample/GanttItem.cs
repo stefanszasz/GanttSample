@@ -1,15 +1,12 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 
 namespace GanttSample
 {
     public class GanttItem : ListBoxItem
     {
-        public readonly Guid Id;
-
         public static readonly DependencyProperty ColorProperty = DependencyProperty.Register(
             "Color", typeof(Brush), typeof(GanttItem), new PropertyMetadata(default(Brush)));
 
@@ -57,25 +54,17 @@ namespace GanttSample
         }
 
         public static readonly DependencyProperty IsItemVisibleProperty = DependencyProperty.Register(
-            "IsItemVisible", typeof (bool), typeof (GanttItem), new FrameworkPropertyMetadata(true, FrameworkPropertyMetadataOptions.AffectsMeasure));
+            "IsItemVisible", typeof(bool), typeof(GanttItem), new FrameworkPropertyMetadata(true, FrameworkPropertyMetadataOptions.AffectsMeasure));
 
         public bool IsItemVisible
         {
-            get { return (bool) GetValue(IsItemVisibleProperty); }
+            get { return (bool)GetValue(IsItemVisibleProperty); }
             set { SetValue(IsItemVisibleProperty, value); }
         }
 
         public GanttItem()
         {
             DefaultStyleKey = typeof(GanttItem);
-            Id = Guid.NewGuid();
-            MouseLeftButtonDown += GanttItem_MouseLeftButtonDown;
-        }
-
-        void GanttItem_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            Selector.SetIsSelected(this, true);                     
-            IsSelected = true;
         }
 
         public override string ToString()

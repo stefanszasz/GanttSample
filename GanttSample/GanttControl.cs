@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -9,6 +8,7 @@ using System.Windows.Shapes;
 
 namespace GanttSample
 {
+    [TemplatePart(Name = "PART_Background", Type = typeof(Canvas))]
     public class GanttControl : ListBox
     {
         readonly DoubleCollection strokeCollection = new DoubleCollection(new List<double> { 2 });
@@ -45,18 +45,12 @@ namespace GanttSample
         public GanttControl()
         {
             Loaded += GanttControl_Loaded;
-            ((INotifyCollectionChanged)Items).CollectionChanged += ListBox_CollectionChanged;
-        }
-
-        private void ListBox_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-
         }
 
         protected override void PrepareContainerForItemOverride(DependencyObject element, object item)
         {
             base.PrepareContainerForItemOverride(element, item);
-            RecalculateOrder(element as GanttItem);
+            RecalculateOrder((GanttItem)element);
         }
 
         void GanttControl_Loaded(object sender, RoutedEventArgs e)
@@ -73,27 +67,27 @@ namespace GanttSample
         void RecalculateOrder(GanttItem item)
         {
             var ganttItems = Items.OfType<object>().Select(x => ItemContainerGenerator.ContainerFromItem(x)).OfType<GanttItem>().OrderBy(x => x.StartDate).ToList();
-            var intersectedItems = item.IntersectsWith(ganttItems);
+            var intersectedItems = item.IntersectsWith(ganttItems).ToArray();
             foreach (var intersectedItem in intersectedItems)
             {
                 if (intersectedItem.Order == item.Order)
                     item.Order++;
                 else
                 {
-                    if (intersectedItem.Order - item.Order < 2)
-                    {
-                        
-                    }
+                    int minimumOrder = intersectedItems.Min(x => x.Order);
+                    if (minimumOrder == 0)
+                        item.Order = intersectedItems.Max(x => x.Order) + 1;
+                    else
+                        item.Order = minimumOrder - 1;
+
+                    break;
                 }
-                //int intersectedItemOrder = intersectedItem.Order;
-                //item.Order++;
-                //ganttItems.Where(x => x.Order < intersectedItemOrder);
             }
         }
 
         public override void OnApplyTemplate()
         {
-            canvas = (Canvas)GetTemplateChild("BackgroundCanvas");
+            canvas = (Canvas)GetTemplateChild("PART_Background");
         }
 
         protected override Size ArrangeOverride(Size arrangeBounds)

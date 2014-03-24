@@ -81,8 +81,8 @@ namespace GanttSample
         {
             observableCollection.Add(new Process
             {
-                StartDate = DateTime.Now.AddMinutes(-90),
-                EndDate = DateTime.Now.AddHours(2),
+                StartDate = new DateTime(2014, 3, 24, 15, 0, 0, 0),
+                EndDate = new DateTime(2014, 3, 24, 17, 0, 0, 0),
                 Text = "New Item " + (++clickCount)
             });
         }
@@ -100,6 +100,16 @@ namespace GanttSample
         private void ChangeDateFormatButton_OnClick(object sender, RoutedEventArgs e)
         {
             GanttControl.DateFormat = "dddd hh:mm tt";
+        }
+
+        private void MoveLeftButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            GanttControl.MoveLeft();
+        }
+
+        private void MoveRightButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            GanttControl.MoveRight();
         }
     }
 }

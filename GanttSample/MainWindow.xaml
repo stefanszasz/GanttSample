@@ -5,15 +5,49 @@
         Title="MainWindow"
         Height="350"
         Width="525">
-    <Grid>
+    <Grid >
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <ganttSample:GanttControl x:Name="GanttControl">
+
+        <Button Grid.Row="0"
+                Click="ButtonBase_OnClick">Add</Button>
+        <Button Grid.Row="1"
+                Width="150"
+                Content="Zoom in"
+                HorizontalAlignment="Left"
+                Name="DecreaseButton"
+                Click="DecreaseButton_OnClick" />
+        <Button Grid.Row="1"
+                Width="150"
+                Content="Zoom out"
+                HorizontalAlignment="Right"
+                Name="IncreaseButton"
+                Click="IncreaseButton_OnClick" />
+        <Button Grid.Row="2"
+                Width="150"
+                Content="Move left"
+                HorizontalAlignment="Left"
+                Name="MoveLeftButton"
+                Click="MoveLeftButton_OnClick" />
+        <Button Grid.Row="2"
+                Width="150"
+                Content="Move right"
+                HorizontalAlignment="Right"
+                Name="MoveRightButton"
+                Click="MoveRightButton_OnClick" />
+        <Button Grid.Row="2"
+                Width="150"
+                Visibility="Hidden"
+                Content="ChangeDateFormat"
+                HorizontalAlignment="Right"
+                Name="ChangeDateFormatButton"
+                Click="ChangeDateFormatButton_OnClick" />
+
+        <ganttSample:GanttControl x:Name="GanttControl" Grid.Row="3">
             <ganttSample:GanttControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <ganttSample:GanttRowPanel MinDate="{Binding MinDate, Mode=OneWay, ElementName=GanttControl}"
@@ -23,7 +57,7 @@
             <ganttSample:GanttControl.Template>
                 <ControlTemplate>
                     <Grid>
-                        <Canvas x:Name="BackgroundCanvas" />
+                        <Canvas x:Name="PART_Background" />
                         <ScrollViewer x:Name="ScrollViewer"
                                       VerticalScrollBarVisibility="Auto"
                                       HorizontalScrollBarVisibility="Auto">
@@ -70,9 +104,7 @@
                                             <Setter Property="BorderBrush"
                                                     TargetName="Border"
                                                     Value="DarkBlue" />
-                                            <Setter Property="Opacity"
-                                                    TargetName="Border"
-                                                    Value="0.5" />
+
                                             <Setter Property="Foreground"
                                                     TargetName="TextBlock"
                                                     Value="GhostWhite" />
@@ -85,25 +117,5 @@
                 </Style>
             </ganttSample:GanttControl.ItemContainerStyle>
         </ganttSample:GanttControl>
-        <Button Grid.Row="1"
-                Click="ButtonBase_OnClick">Add</Button>
-        <Button Grid.Row="2"
-                Width="150"
-                Content="Zoom in"
-                HorizontalAlignment="Left"
-                Name="DecreaseButton"
-                Click="DecreaseButton_OnClick" />
-        <Button Grid.Row="2"
-                Width="150"
-                Content="Zoom out"
-                HorizontalAlignment="Right"
-                Name="IncreaseButton"
-                Click="IncreaseButton_OnClick" />
-        <Button Grid.Row="3"
-                Width="150"
-                Content="ChangeDateFormat"
-                HorizontalAlignment="Right"
-                Name="ChangeDateFormatButton"
-                Click="ChangeDateFormatButton_OnClick" />
     </Grid>
 </Window>
