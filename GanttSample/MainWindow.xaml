@@ -67,7 +67,32 @@
                 </ControlTemplate>
             </ganttSample:GanttControl.Template>
             <ganttSample:GanttControl.ItemContainerStyle>
-                <Style TargetType="ganttSample:GanttItem">
+                <Style TargetType="ganttSample:GanttGroupItem">
+                    <Setter Property="VerticalAlignment"
+                            Value="Top" />
+                    <Setter Property="Background"
+                            Value="{Binding Color}" />
+                    <Setter Property="Header"
+                            Value="{Binding GroupName}" />
+                    <Setter Property="StartDate"
+                            Value="{Binding StartDate}" />
+                    <Setter Property="EndDate"
+                            Value="{Binding EndDate}" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type ganttSample:GanttGroupItem}">
+                                <Border Background="Tan"
+                                        Height="22"
+                                        x:Name="Border"
+                                        BorderThickness="2"
+                                        Opacity="0.5"
+                                        ToolTip="{TemplateBinding ToolTip}">
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+                <!--<Style TargetType="ganttSample:GanttItem">
                     <Setter Property="VerticalAlignment"
                             Value="Top" />
                     <Setter Property="Background"
@@ -116,7 +141,7 @@
                             </ControlTemplate>
                         </Setter.Value>
                     </Setter>
-                </Style>
+                </Style>-->
             </ganttSample:GanttControl.ItemContainerStyle>
         </ganttSample:GanttControl>
     </Grid>

@@ -32,11 +32,11 @@ namespace GanttSample
         }
 
         public static readonly DependencyProperty ShowDateTimeLinesProperty = DependencyProperty.Register(
-            "ShowDateTimeLines", typeof (bool), typeof (GanttControl), new PropertyMetadata(true));
+            "ShowDateTimeLines", typeof(bool), typeof(GanttControl), new PropertyMetadata(true));
 
         public bool ShowDateTimeLines
         {
-            get { return (bool) GetValue(ShowDateTimeLinesProperty); }
+            get { return (bool)GetValue(ShowDateTimeLinesProperty); }
             set { SetValue(ShowDateTimeLinesProperty, value); }
         }
 
@@ -59,7 +59,7 @@ namespace GanttSample
         protected override void PrepareContainerForItemOverride(DependencyObject element, object item)
         {
             base.PrepareContainerForItemOverride(element, item);
-            RecalculateOrder((GanttItem)element);
+            RecalculateOrder((GanttGroupItem)element);
         }
 
         void GanttControl_Loaded(object sender, RoutedEventArgs e)
@@ -69,13 +69,13 @@ namespace GanttSample
 
         protected override DependencyObject GetContainerForItemOverride()
         {
-            var containerForItemOverride = new GanttItem();
+            var containerForItemOverride = new GanttGroupItem();
             return containerForItemOverride;
         }
 
-        void RecalculateOrder(GanttItem item)
+        void RecalculateOrder(GanttGroupItem item)
         {
-            var ganttItems = Items.OfType<object>().Select(x => ItemContainerGenerator.ContainerFromItem(x)).OfType<GanttItem>().OrderBy(x => x.StartDate).ToList();
+            var ganttItems = Items.OfType<object>().Select(x => ItemContainerGenerator.ContainerFromItem(x)).OfType<GanttGroupItem>().OrderBy(x => x.StartDate).ToList();
             var intersectedItems = item.IntersectsWith(ganttItems).ToArray();
             foreach (var intersectedItem in intersectedItems)
             {

@@ -31,17 +31,14 @@ namespace GanttSample
             double maxHeight = 0;
             double desiredHeight = 0;
 
-            var ganttItems = Children.OfType<GanttItem>().Where(x => x.IsItemVisible);
-            foreach (var groupedItems in ganttItems.GroupBy(x => x.GroupName))
+            var ganttItems = Children.OfType<GanttGroupItem>().Where(x => x.IsItemVisible);
+            foreach (var ganttItem in ganttItems)
             {
-                foreach (var ganttItem in groupedItems)
-                {
-                    ganttItem.Measure(availableSize);
-                    desiredHeight = ganttItem.DesiredSize.Height;
-                    double height = ganttItem.DesiredSize.Height * ganttItem.Order;
-                    if (height > maxHeight)
-                        maxHeight = height;
-                }
+                ganttItem.Measure(availableSize);
+                desiredHeight = ganttItem.DesiredSize.Height;
+                double height = ganttItem.DesiredSize.Height * ganttItem.Order;
+                if (height > maxHeight)
+                    maxHeight = height;
             }
 
             return new Size(0, maxHeight + desiredHeight + 50);
@@ -52,17 +49,35 @@ namespace GanttSample
             double range = (MaxDate - MinDate).Ticks;
             double pixelsPerTick = finalSize.Width / range;
 
-            var ganttItems = Children.OfType<GanttItem>().Where(x => x.IsItemVisible);
-            foreach (var groupedItems in ganttItems.GroupBy(x => x.GroupName))
+            var ganttItems = Children.OfType<GanttGroupItem>().Where(x => x.IsItemVisible);
+            foreach (var ganttItem in ganttItems)
             {
-                foreach (var ganttItem in groupedItems)
-                {
-                    Rect rect = ArrangeChild(ganttItem, MinDate, pixelsPerTick, finalSize.Height);
-                    ganttItem.Arrange(rect);
-                }
+                Rect rect = ArrangeChild(ganttItem, MinDate, pixelsPerTick, finalSize.Height);
+                ganttItem.Arrange(rect);
             }
 
             return finalSize;
+        }
+
+
+        private Rect ArrangeChild(GanttGroupItem child, DateTime minDate, double pixelsPerTick, double elementHeight)
+        {
+            DateTime childStartDate = child.StartDate;
+            DateTime childEndDate = child.EndDate;
+            TimeSpan childDuration = childEndDate - childStartDate;
+
+            double offset = (childStartDate - minDate).Ticks * pixelsPerTick;
+            double width = childDuration.Ticks * pixelsPerTick;
+
+            double y = child.DesiredSize.Height * child.Order;
+            if (offset < 0)
+                offset = 0;
+
+            if (width < 0)
+                width = 0;
+
+            var finalRect = new Rect(offset, y + 50, width, elementHeight);
+            return finalRect;
         }
 
         private Rect ArrangeChild(GanttItem child, DateTime minDate, double pixelsPerTick, double elementHeight)

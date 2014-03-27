@@ -18,5 +18,19 @@ namespace GanttSample
                 }
             }
         }
+
+
+        public static IEnumerable<GanttGroupItem> IntersectsWith(this GanttGroupItem processItem, IEnumerable<GanttGroupItem> items)
+        {
+            foreach (GanttGroupItem item in items)
+            {
+                if (item.Equals(processItem)) continue;
+                bool intersects = processItem.StartDate < item.EndDate && item.StartDate < processItem.EndDate;
+                if (intersects)
+                {
+                    yield return item;
+                }
+            }
+        }
     }
 }

@@ -7,7 +7,7 @@ namespace GanttSample
     public class GanttGroupItem : ListBoxItem
     {
         public static readonly DependencyProperty StartDateProperty = DependencyProperty.Register(
-            "StartDate", typeof(DateTime), typeof(GanttItem), new PropertyMetadata(default(DateTime)));
+            "StartDate", typeof(DateTime), typeof(GanttGroupItem), new PropertyMetadata(default(DateTime)));
 
         public DateTime StartDate
         {
@@ -16,7 +16,7 @@ namespace GanttSample
         }
 
         public static readonly DependencyProperty EndDateProperty = DependencyProperty.Register(
-            "EndDate", typeof(DateTime), typeof(GanttItem), new PropertyMetadata(default(DateTime)));
+            "EndDate", typeof(DateTime), typeof(GanttGroupItem), new PropertyMetadata(default(DateTime)));
 
         public DateTime EndDate
         {
@@ -34,7 +34,7 @@ namespace GanttSample
         }
 
         public static readonly DependencyProperty OrderProperty = DependencyProperty.Register(
-            "Order", typeof(int), typeof(GanttItem), new PropertyMetadata(default(int)));
+            "Order", typeof(int), typeof(GanttGroupItem), new PropertyMetadata(default(int)));
 
         public int Order
         {
@@ -42,8 +42,11 @@ namespace GanttSample
             set { SetValue(OrderProperty, value); }
         }
 
+        public bool IsItemVisible { get; set; }
+
         public GanttGroupItem()
         {
+            IsItemVisible = true;
             DefaultStyleKey = typeof(GanttGroupItem);
         }
     }
