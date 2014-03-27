@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Media;
+using System.Windows.Shapes;
 
 namespace GanttSample
 {
@@ -36,15 +40,15 @@ namespace GanttSample
             {
                 StartDate = DateTime.Today.AddHours(13),
                 EndDate = DateTime.Today.AddHours(14),
-                Text = "Sha task",
+                Text = "Green process completed",
                 Hint = "BLABLA hint3",
-                Color = Brushes.Khaki
+                Color = Brushes.Green
             });
             observableCollection.Add(new Process
             {
                 StartDate = DateTime.Today.AddHours(13).AddMinutes(12),
                 EndDate = DateTime.Today.AddHours(16),
-                Text = "On next level",
+                Text = "On next level failed",
                 Hint = "Next row",
                 Color = Brushes.Red
             });
@@ -52,9 +56,9 @@ namespace GanttSample
             {
                 StartDate = DateTime.Today.AddHours(13).AddMinutes(45),
                 EndDate = DateTime.Today.AddHours(17),
-                Text = "Third row",
+                Text = "Third row in progress",
                 Hint = "Nextest row",
-                Color = Brushes.Wheat
+                Color = Brushes.Yellow
             });
 
             /*
@@ -81,8 +85,8 @@ namespace GanttSample
         {
             observableCollection.Add(new Process
             {
-                StartDate = new DateTime(2014, 3, 24, 15, 0, 0, 0),
-                EndDate = new DateTime(2014, 3, 24, 17, 0, 0, 0),
+                StartDate = DateTime.Now,
+                EndDate = DateTime.Now.AddHours(2),
                 Text = "New Item " + (++clickCount)
             });
         }
@@ -110,6 +114,19 @@ namespace GanttSample
         private void MoveRightButton_OnClick(object sender, RoutedEventArgs e)
         {
             GanttControl.MoveRight();
+        }
+    }
+
+    public class GanttItemWidthConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return value;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return value;
         }
     }
 }

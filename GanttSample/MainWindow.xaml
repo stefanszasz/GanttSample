@@ -48,6 +48,9 @@
                 Click="ChangeDateFormatButton_OnClick" />
 
         <ganttSample:GanttControl x:Name="GanttControl" Grid.Row="3">
+            <Control.Resources>
+                <ganttSample:GanttItemWidthConverter x:Key="GanttItemWidthConverter" />
+            </Control.Resources>
             <ganttSample:GanttControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <ganttSample:GanttRowPanel MinDate="{Binding MinDate, Mode=OneWay, ElementName=GanttControl}"
@@ -81,7 +84,7 @@
                     <Setter Property="EndDate"
                             Value="{Binding EndDate}" />
                     <Setter Property="ToolTip"
-                            Value="{Binding Hint}" />
+                            Value="{Binding Hint}"/>
                     <Setter Property="IsItemVisible"
                             Value="{Binding IsItemVisible}" />
                     <Setter Property="Template">
@@ -90,10 +93,14 @@
                                 <Border Background="{TemplateBinding Background}"
                                         Height="22"
                                         x:Name="Border"
+                                        MaxWidth="{Binding ActualWidth, Converter={StaticResource GanttItemWidthConverter}, 
+                                                                               RelativeSource={RelativeSource TemplatedParent}, 
+                                                                               UpdateSourceTrigger=PropertyChanged}"
                                         ToolTip="{TemplateBinding ToolTip}">
                                     <TextBlock Text="{TemplateBinding Text}"
                                                x:Name="TextBlock"
                                                TextTrimming="CharacterEllipsis"
+                                               TextWrapping="Wrap"
                                                VerticalAlignment="Center" />
                                 </Border>
                                 <ControlTemplate.Triggers>
@@ -106,7 +113,6 @@
                                             <Setter Property="BorderBrush"
                                                     TargetName="Border"
                                                     Value="DarkBlue" />
-
                                             <Setter Property="Foreground"
                                                     TargetName="TextBlock"
                                                     Value="GhostWhite" />
