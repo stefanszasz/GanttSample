@@ -7,6 +7,24 @@ namespace GanttSample
 {
     public class GanttItem : ListBoxItem
     {
+        public static readonly DependencyProperty TextProperty = DependencyProperty.Register(
+            "Text", typeof(string), typeof(GanttItem), new PropertyMetadata(default(string)));
+
+        public string Text
+        {
+            get { return (string)GetValue(TextProperty); }
+            set { SetValue(TextProperty, value); }
+        }
+
+        public static readonly DependencyProperty GroupNameProperty = DependencyProperty.Register(
+            "GroupName", typeof (string), typeof (GanttItem), new PropertyMetadata(default(string)));
+
+        public string GroupName
+        {
+            get { return (string) GetValue(GroupNameProperty); }
+            set { SetValue(GroupNameProperty, value); }
+        }
+
         public static readonly DependencyProperty ColorProperty = DependencyProperty.Register(
             "Color", typeof(Brush), typeof(GanttItem), new PropertyMetadata(default(Brush)));
 
@@ -34,16 +52,6 @@ namespace GanttSample
             set { SetValue(EndDateProperty, value); }
         }
 
-        public static readonly DependencyProperty TextProperty = DependencyProperty.Register(
-            "Text", typeof(string), typeof(GanttItem), new PropertyMetadata(default(string)));
-
-
-        public string Text
-        {
-            get { return (string)GetValue(TextProperty); }
-            set { SetValue(TextProperty, value); }
-        }
-
         public static readonly DependencyProperty OrderProperty = DependencyProperty.Register(
             "Order", typeof(int), typeof(GanttItem), new PropertyMetadata(default(int)));
 
@@ -60,15 +68,6 @@ namespace GanttSample
         {
             get { return (bool)GetValue(IsItemVisibleProperty); }
             set { SetValue(IsItemVisibleProperty, value); }
-        }
-
-        public static readonly DependencyProperty GroupNameProperty = DependencyProperty.Register(
-            "GroupName", typeof (string), typeof (GanttItem), new PropertyMetadata(default(string)));
-
-        public string GroupName
-        {
-            get { return (string) GetValue(GroupNameProperty); }
-            set { SetValue(GroupNameProperty, value); }
         }
 
         public GanttItem()

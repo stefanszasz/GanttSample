@@ -73,10 +73,16 @@ namespace GanttSample
                 observableCollection.Add(process);
             }*/
 
-            GanttControl.ItemsSource = observableCollection;
+            var processChain = new ProcessChain("PC1", observableCollection);
+
+            processChains = new ObservableCollection<ProcessChain> { processChain};
+
+            GanttControl.ItemsSource = processChains;
         }
 
         private int clickCount;
+        private ObservableCollection<ProcessChain> processChains = new ObservableCollection<ProcessChain>();
+
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
             observableCollection.Add(new Process

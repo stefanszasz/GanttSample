@@ -1,8 +1,28 @@
 ﻿using System;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows.Media;
 
 namespace GanttSample
 {
+    public class ProcessChain
+    {
+        public ProcessChain(string header, ObservableCollection<Process> processes)
+        {
+            Header = header;
+            Processes = processes;
+            StartDate = processes.Min(x => x.StartDate);
+            EndDate = processes.Max(x => x.EndDate);
+        }
+
+        public ObservableCollection<Process> Processes { get; set; }
+        public string Header { get; set; }
+
+        public DateTime StartDate { get; private set; }
+        public DateTime EndDate { get; private set; }
+        public string Hint { get; set; }
+    }
+
     public class Process
     {
         public DateTime StartDate { get; set; }

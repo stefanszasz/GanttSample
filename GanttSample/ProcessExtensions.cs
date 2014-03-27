@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace GanttSample
 {
@@ -18,7 +16,6 @@ namespace GanttSample
                 }
             }
         }
-
 
         public static IEnumerable<GanttGroupItem> IntersectsWith(this GanttGroupItem processItem, IEnumerable<GanttGroupItem> items)
         {

@@ -61,11 +61,12 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="GanttItemPanel.cs" />
     <Compile Include="ProcessExtensions.cs" />
     <Compile Include="GanttControl.cs" />
     <Compile Include="GanttGroupItem.cs" />
     <Compile Include="GanttItem.cs" />
-    <Compile Include="GanttRowPanel.cs" />
+    <Compile Include="MainGanttPanel.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

@@ -47,10 +47,10 @@
                 Name="ChangeDateFormatButton"
                 Click="ChangeDateFormatButton_OnClick" />
 
-        <ganttSample:GanttControl x:Name="GanttControl" Grid.Row="3">
+        <ganttSample:GanttControl x:Name="GanttControl" Grid.Row="3" ChildrenPropertyName="Processes">
             <ganttSample:GanttControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <ganttSample:GanttRowPanel MinDate="{Binding MinDate, Mode=OneWay, ElementName=GanttControl}"
+                    <ganttSample:MainGanttPanel MinDate="{Binding MinDate, Mode=OneWay, ElementName=GanttControl}"
                                                MaxDate="{Binding MaxDate, Mode=OneWay, ElementName=GanttControl}" />
                 </ItemsPanelTemplate>
             </ganttSample:GanttControl.ItemsPanel>
@@ -58,8 +58,7 @@
                 <ControlTemplate>
                     <Grid>
                         <Canvas x:Name="PART_Background" />
-                        <ScrollViewer x:Name="ScrollViewer"
-                                      VerticalScrollBarVisibility="Auto"
+                        <ScrollViewer VerticalScrollBarVisibility="Auto"
                                       HorizontalScrollBarVisibility="Auto">
                             <ItemsPresenter />
                         </ScrollViewer>
@@ -71,77 +70,91 @@
                     <Setter Property="VerticalAlignment"
                             Value="Top" />
                     <Setter Property="Background"
-                            Value="{Binding Color}" />
+                            Value="Gray" />
                     <Setter Property="Header"
-                            Value="{Binding GroupName}" />
+                            Value="{Binding Header}" />
                     <Setter Property="StartDate"
                             Value="{Binding StartDate}" />
+                    <Setter Property="ToolTip"
+                            Value="{Binding Hint}" />
                     <Setter Property="EndDate"
                             Value="{Binding EndDate}" />
+                    <Setter Property="ItemsPanel">
+                        <Setter.Value>
+                            <ItemsPanelTemplate>
+                                <ganttSample:GanttItemPanel MinDate="{Binding StartDate, Mode=OneWay}"
+                                                            MaxDate="{Binding EndDate, Mode=OneWay}" />
+                            </ItemsPanelTemplate>
+                        </Setter.Value>
+                    </Setter>
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="{x:Type ganttSample:GanttGroupItem}">
-                                <Border Background="Tan"
-                                        Height="22"
-                                        x:Name="Border"
-                                        BorderThickness="2"
-                                        Opacity="0.5"
-                                        ToolTip="{TemplateBinding ToolTip}">
-                                </Border>
+                                <Grid Background="{TemplateBinding Background}">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition />
+                                        </Grid.RowDefinitions>
+                                        <TextBlock Text="{TemplateBinding Header}" 
+                                                   Foreground="GhostWhite"/>
+                                        <ScrollViewer VerticalScrollBarVisibility="Auto"
+                                                      Grid.Row="1"
+                                                      HorizontalScrollBarVisibility="Auto">
+                                            <ItemsPresenter />
+                                        </ScrollViewer>
+                                    </Grid>
+
+                                </Grid>
                             </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                    <Setter Property="ItemContainerStyle">
+                        <Setter.Value>
+                            <Style TargetType="ganttSample:GanttItem">
+                                <Setter Property="VerticalAlignment" Value="Top" />
+                                <Setter Property="Background" Value="{Binding Color}" />
+                                <Setter Property="Text" Value="{Binding Text}" />
+                                <Setter Property="StartDate" Value="{Binding StartDate}" />
+                                <Setter Property="ToolTip" Value="{Binding Hint}" />
+                                <Setter Property="EndDate" Value="{Binding EndDate}" />
+                                <Setter Property="IsItemVisible" Value="{Binding IsItemVisible}" />
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type ganttSample:GanttItem}">
+                                            <Border Background="{TemplateBinding Background}" 
+                                                    Height="22"
+                                                    x:Name="Border"
+                                                    MaxWidth="{TemplateBinding ActualWidth}"
+                                                    ToolTip="{TemplateBinding ToolTip}">
+                                                <TextBlock Text="{TemplateBinding Text}"
+                                                           x:Name="TextBlock"
+                                                           TextTrimming="CharacterEllipsis"
+                                                           VerticalAlignment="Center" />
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsSelected" 
+                                                         Value="True">
+                                                    <Trigger.Setters>
+                                                        <Setter Property="BorderThickness"
+                                                                TargetName="Border"
+                                                                Value="1" />
+                                                        <Setter Property="BorderBrush"
+                                                                TargetName="Border"
+                                                                Value="DarkBlue" />
+                                                        <Setter Property="Foreground"
+                                                                TargetName="TextBlock"
+                                                                Value="GhostWhite" />
+                                                    </Trigger.Setters>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
                         </Setter.Value>
                     </Setter>
                 </Style>
-                <!--<Style TargetType="ganttSample:GanttItem">
-                    <Setter Property="VerticalAlignment"
-                            Value="Top" />
-                    <Setter Property="Background"
-                            Value="{Binding Color}" />
-                    <Setter Property="Text"
-                            Value="{Binding Text}" />
-                    <Setter Property="GroupName"
-                            Value="{Binding GroupName}" />
-                    <Setter Property="StartDate"
-                            Value="{Binding StartDate}" />
-                    <Setter Property="EndDate"
-                            Value="{Binding EndDate}" />
-                    <Setter Property="ToolTip"
-                            Value="{Binding Hint}" />
-                    <Setter Property="IsItemVisible"
-                            Value="{Binding IsItemVisible}" />
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="{x:Type ganttSample:GanttItem}">
-                                <Border Background="{TemplateBinding Background}"
-                                        Height="22"
-                                        x:Name="Border"
-                                        ToolTip="{TemplateBinding ToolTip}">
-                                    <TextBlock Text="{TemplateBinding Text}"
-                                               x:Name="TextBlock"
-                                               TextTrimming="CharacterEllipsis"
-                                               VerticalAlignment="Center" />
-                                </Border>
-                                <ControlTemplate.Triggers>
-                                    <Trigger Property="IsSelected"
-                                             Value="True">
-                                        <Trigger.Setters>
-                                            <Setter Property="BorderThickness"
-                                                    TargetName="Border"
-                                                    Value="1" />
-                                            <Setter Property="BorderBrush"
-                                                    TargetName="Border"
-                                                    Value="DarkBlue" />
-
-                                            <Setter Property="Foreground"
-                                                    TargetName="TextBlock"
-                                                    Value="GhostWhite" />
-                                        </Trigger.Setters>
-                                    </Trigger>
-                                </ControlTemplate.Triggers>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Style>-->
             </ganttSample:GanttControl.ItemContainerStyle>
         </ganttSample:GanttControl>
     </Grid>

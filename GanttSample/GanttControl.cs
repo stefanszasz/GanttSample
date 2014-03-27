@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -40,16 +41,25 @@ namespace GanttSample
             set { SetValue(ShowDateTimeLinesProperty, value); }
         }
 
-        private Canvas canvas;
-
         public static readonly DependencyProperty DateFormatProperty = DependencyProperty.Register(
             "DateFormat", typeof(string), typeof(GanttControl), new FrameworkPropertyMetadata("H tt", FrameworkPropertyMetadataOptions.AffectsArrange));
+
+        public static readonly DependencyProperty ChildrenPropertyNameProperty = DependencyProperty.Register(
+            "ChildrenPropertyName", typeof(string), typeof(GanttControl), new PropertyMetadata("Children"));
+
+        public string ChildrenPropertyName
+        {
+            get { return (string)GetValue(ChildrenPropertyNameProperty); }
+            set { SetValue(ChildrenPropertyNameProperty, value); }
+        }
 
         public string DateFormat
         {
             get { return (string)GetValue(DateFormatProperty); }
             set { SetValue(DateFormatProperty, value); }
         }
+
+        private Canvas canvas;
 
         public GanttControl()
         {
@@ -58,8 +68,13 @@ namespace GanttSample
 
         protected override void PrepareContainerForItemOverride(DependencyObject element, object item)
         {
+            if (element == null) throw new ArgumentNullException("element");
+            if (item == null) throw new ArgumentNullException("item");
+
             base.PrepareContainerForItemOverride(element, item);
-            RecalculateOrder((GanttGroupItem)element);
+            var ganttGroupItem = (GanttGroupItem)element;
+            ganttGroupItem.ItemsSource = (IEnumerable)item.GetType().GetProperty(ChildrenPropertyName).GetValue(item, null);
+            RecalculateOrder(ganttGroupItem);
         }
 
         void GanttControl_Loaded(object sender, RoutedEventArgs e)
