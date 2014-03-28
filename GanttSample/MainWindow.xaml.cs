@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -48,8 +49,8 @@ namespace GanttSample
             {
                 StartDate = DateTime.Today.AddHours(13).AddMinutes(12),
                 EndDate = DateTime.Today.AddHours(16),
-                Text = "On next level failed",
-                Hint = "Next row",
+                Text = "On next level",
+                Hint = "Row1",
                 Color = Brushes.Red
             });
             observableCollection.Add(new Process
@@ -59,6 +60,31 @@ namespace GanttSample
                 Text = "Third row in progress",
                 Hint = "Nextest row",
                 Color = Brushes.Yellow
+            });
+
+            observableCollection.Add(new Process
+            {
+                StartDate = DateTime.Today.AddHours(13).AddMinutes(45),
+                EndDate = DateTime.Today.AddHours(17),
+                Text = "Forth row",
+                Hint = "Nextest row",
+                Color = Brushes.Orange
+            });
+            observableCollection.Add(new Process
+            {
+                StartDate = DateTime.Today.AddHours(14),
+                EndDate = DateTime.Today.AddHours(16),
+                Text = "Fifth row",
+                Hint = "Nextest row",
+                Color = Brushes.Purple
+            });
+            observableCollection.Add(new Process
+            {
+                StartDate = DateTime.Today.AddHours(13).AddMinutes(63),
+                EndDate = DateTime.Today.AddHours(17),
+                Text = "Sixth row",
+                Hint = "Nextest row",
+                Color = Brushes.Orange
             });
 
             /*
@@ -77,16 +103,22 @@ namespace GanttSample
                 observableCollection.Add(process);
             }*/
 
-            GanttControl.ItemsSource = observableCollection;
+            var processChain = new ProcessChain("PC1", observableCollection);
+            var chain = new ProcessChain("PC2", new ObservableCollection<Process>(observableCollection));
+            processChains = new ObservableCollection<ProcessChain> { processChain};
+
+            GanttControl.ItemsSource = processChains;
         }
 
         private int clickCount;
+        private ObservableCollection<ProcessChain> processChains = new ObservableCollection<ProcessChain>();
+
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
-            observableCollection.Add(new Process
+            processChains[0].Processes.Add(new Process
             {
                 StartDate = DateTime.Now,
-                EndDate = DateTime.Now.AddHours(2),
+                EndDate = DateTime.Now.AddHours(3),
                 Text = "New Item " + (++clickCount)
             });
         }
@@ -114,19 +146,6 @@ namespace GanttSample
         private void MoveRightButton_OnClick(object sender, RoutedEventArgs e)
         {
             GanttControl.MoveRight();
-        }
-    }
-
-    public class GanttItemWidthConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return value;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return value;
         }
     }
 }

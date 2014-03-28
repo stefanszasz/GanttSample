@@ -1,14 +1,12 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace GanttSample
 {
     public static class ProcessExtensions
     {
-        public static IEnumerable<GanttItem> IntersectsWith(this GanttItem processItem, IEnumerable<GanttItem> items)
+        public static IEnumerable<IOrderedDateItem> IntersectsWith(this IOrderedDateItem processItem, IEnumerable<IOrderedDateItem> items)
         {
-            foreach (GanttItem item in items)
+            foreach (var item in items)
             {
                 if (item.Equals(processItem)) continue;
                 bool intersects = processItem.StartDate < item.EndDate && item.StartDate < processItem.EndDate;

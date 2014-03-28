@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -14,10 +15,12 @@ namespace GanttSample
         readonly DoubleCollection strokeCollection = new DoubleCollection(new List<double> { 2 });
 
         public static readonly DependencyProperty MinDateProperty =
-            DependencyProperty.Register("MinDate", typeof(DateTime), typeof(GanttControl), new FrameworkPropertyMetadata(DateTime.Now.AddHours(-8), FrameworkPropertyMetadataOptions.AffectsMeasure));
+            DependencyProperty.Register("MinDate", typeof(DateTime), typeof(GanttControl), new FrameworkPropertyMetadata(DateTime.Now.AddHours(-8),
+                FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange | FrameworkPropertyMetadataOptions.AffectsRender | FrameworkPropertyMetadataOptions.AffectsParentArrange | FrameworkPropertyMetadataOptions.AffectsParentMeasure));
 
         public static readonly DependencyProperty MaxDateProperty =
-       DependencyProperty.Register("MaxDate", typeof(DateTime), typeof(GanttControl), new FrameworkPropertyMetadata(DateTime.Now.AddHours(8), FrameworkPropertyMetadataOptions.AffectsMeasure));
+       DependencyProperty.Register("MaxDate", typeof(DateTime), typeof(GanttControl), new FrameworkPropertyMetadata(DateTime.Now.AddHours(8),
+           FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange | FrameworkPropertyMetadataOptions.AffectsRender | FrameworkPropertyMetadataOptions.AffectsParentArrange | FrameworkPropertyMetadataOptions.AffectsParentMeasure));
 
         public DateTime MaxDate
         {
@@ -32,24 +35,33 @@ namespace GanttSample
         }
 
         public static readonly DependencyProperty ShowDateTimeLinesProperty = DependencyProperty.Register(
-            "ShowDateTimeLines", typeof (bool), typeof (GanttControl), new PropertyMetadata(true));
+            "ShowDateTimeLines", typeof(bool), typeof(GanttControl), new PropertyMetadata(true));
 
         public bool ShowDateTimeLines
         {
-            get { return (bool) GetValue(ShowDateTimeLinesProperty); }
+            get { return (bool)GetValue(ShowDateTimeLinesProperty); }
             set { SetValue(ShowDateTimeLinesProperty, value); }
         }
 
-        private Canvas canvas;
-
         public static readonly DependencyProperty DateFormatProperty = DependencyProperty.Register(
             "DateFormat", typeof(string), typeof(GanttControl), new FrameworkPropertyMetadata("H tt", FrameworkPropertyMetadataOptions.AffectsArrange));
+
+        public static readonly DependencyProperty ChildrenPropertyNameProperty = DependencyProperty.Register(
+            "ChildrenPropertyName", typeof(string), typeof(GanttControl), new PropertyMetadata("Children"));
+
+        public string ChildrenPropertyName
+        {
+            get { return (string)GetValue(ChildrenPropertyNameProperty); }
+            set { SetValue(ChildrenPropertyNameProperty, value); }
+        }
 
         public string DateFormat
         {
             get { return (string)GetValue(DateFormatProperty); }
             set { SetValue(DateFormatProperty, value); }
         }
+
+        private Canvas canvas;
 
         public GanttControl()
         {
@@ -58,8 +70,14 @@ namespace GanttSample
 
         protected override void PrepareContainerForItemOverride(DependencyObject element, object item)
         {
+            if (element == null) throw new ArgumentNullException("element");
+            if (item == null) throw new ArgumentNullException("item");
+
             base.PrepareContainerForItemOverride(element, item);
-            RecalculateOrder((GanttItem)element);
+            var ganttGroupItem = (GanttGroupItem)element;
+            ganttGroupItem.OnNewItemAdded += () => RecalculateOrder(ganttGroupItem);
+            ganttGroupItem.ItemsSource = (IEnumerable)item.GetType().GetProperty(ChildrenPropertyName).GetValue(item, null);
+            RecalculateOrder(ganttGroupItem);
         }
 
         void GanttControl_Loaded(object sender, RoutedEventArgs e)
@@ -69,29 +87,15 @@ namespace GanttSample
 
         protected override DependencyObject GetContainerForItemOverride()
         {
-            var containerForItemOverride = new GanttItem();
+            var containerForItemOverride = new GanttGroupItem();
             return containerForItemOverride;
         }
 
-        void RecalculateOrder(GanttItem item)
+        void RecalculateOrder(GanttGroupItem item)
         {
-            var ganttItems = Items.OfType<object>().Select(x => ItemContainerGenerator.ContainerFromItem(x)).OfType<GanttItem>().OrderBy(x => x.StartDate).ToList();
+            var ganttItems = Items.OfType<object>().Select(x => ItemContainerGenerator.ContainerFromItem(x)).OfType<GanttGroupItem>().OrderBy(x => x.StartDate).ToList();
             var intersectedItems = item.IntersectsWith(ganttItems).ToArray();
-            foreach (var intersectedItem in intersectedItems)
-            {
-                if (intersectedItem.Order == item.Order)
-                    item.Order++;
-                else
-                {
-                    int minimumOrder = intersectedItems.Min(x => x.Order);
-                    if (minimumOrder == 0)
-                        item.Order = intersectedItems.Max(x => x.Order) + 1;
-                    else
-                        item.Order = minimumOrder - 1;
-
-                    break;
-                }
-            }
+            ReorderingItemsHelper.ReorderItemsBasedOnDate(item, intersectedItems);
         }
 
         public override void OnApplyTemplate()
