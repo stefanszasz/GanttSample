@@ -8,10 +8,17 @@ namespace GanttSample
     public class GanttItemPanel : Panel
     {
         public static readonly DependencyProperty MaxDateProperty =
-            DependencyProperty.Register("MaxDate", typeof(DateTime), typeof(GanttItemPanel), new FrameworkPropertyMetadata(DateTime.Now.AddDays(0), FrameworkPropertyMetadataOptions.AffectsMeasure));
+            DependencyProperty.Register("MaxDate", typeof(DateTime), typeof(GanttItemPanel), new FrameworkPropertyMetadata(DateTime.Now.AddDays(0), 
+                FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange | FrameworkPropertyMetadataOptions.AffectsRender | FrameworkPropertyMetadataOptions.AffectsParentArrange | FrameworkPropertyMetadataOptions.AffectsParentMeasure));
 
         public static readonly DependencyProperty MinDateProperty =
-            DependencyProperty.Register("MinDate", typeof(DateTime), typeof(GanttItemPanel), new FrameworkPropertyMetadata(DateTime.Now.AddHours(0), FrameworkPropertyMetadataOptions.AffectsMeasure));
+            DependencyProperty.Register("MinDate", typeof(DateTime), typeof(GanttItemPanel), new FrameworkPropertyMetadata(DateTime.Now.AddHours(0),
+                FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange | FrameworkPropertyMetadataOptions.AffectsRender | FrameworkPropertyMetadataOptions.AffectsParentArrange | FrameworkPropertyMetadataOptions.AffectsParentMeasure, PropertyChangedCallback));
+
+        private static void PropertyChangedCallback(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
+        {
+
+        }
 
         public DateTime MaxDate
         {
@@ -27,20 +34,17 @@ namespace GanttSample
 
         protected override Size MeasureOverride(Size availableSize)
         {
-            double maxHeight = 0;
             double desiredHeight = 0;
-
-            var ganttItems = Children.OfType<GanttItem>().Where(x => x.IsItemVisible);
+            var ganttItems = Children.OfType<GanttItem>().Where(x => x.IsItemVisible).ToArray();
             foreach (var ganttItem in ganttItems)
             {
                 ganttItem.Measure(availableSize);
                 desiredHeight = ganttItem.DesiredSize.Height;
-                double height = ganttItem.DesiredSize.Height * ganttItem.Order;
-                if (height > maxHeight)
-                    maxHeight = height;
             }
 
-            return new Size(0, maxHeight + desiredHeight + 50);
+            int max = ganttItems.Max(x => x.Order) + 1;
+
+            return new Size(0, desiredHeight * max);
         }
 
         protected override Size ArrangeOverride(Size finalSize)

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -7,8 +8,11 @@ namespace GanttSample
 {
     public class GanttGroupItem : ListBox
     {
+        public event Action OnNewItemAdded = delegate { };
+
         public static readonly DependencyProperty StartDateProperty = DependencyProperty.Register(
-            "StartDate", typeof(DateTime), typeof(GanttGroupItem), new PropertyMetadata(default(DateTime)));
+            "StartDate", typeof(DateTime), typeof(GanttGroupItem), new FrameworkPropertyMetadata(DateTime.Now.AddHours(0),
+                FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange | FrameworkPropertyMetadataOptions.AffectsRender | FrameworkPropertyMetadataOptions.AffectsParentArrange | FrameworkPropertyMetadataOptions.AffectsParentMeasure));
 
         public DateTime StartDate
         {
@@ -17,7 +21,8 @@ namespace GanttSample
         }
 
         public static readonly DependencyProperty EndDateProperty = DependencyProperty.Register(
-            "EndDate", typeof(DateTime), typeof(GanttGroupItem), new PropertyMetadata(default(DateTime)));
+            "EndDate", typeof(DateTime), typeof(GanttGroupItem), new FrameworkPropertyMetadata(DateTime.Now.AddHours(0),
+                FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange | FrameworkPropertyMetadataOptions.AffectsRender | FrameworkPropertyMetadataOptions.AffectsParentArrange | FrameworkPropertyMetadataOptions.AffectsParentMeasure));
 
         public DateTime EndDate
         {
@@ -35,7 +40,7 @@ namespace GanttSample
         }
 
         public static readonly DependencyProperty OrderProperty = DependencyProperty.Register(
-            "Order", typeof(int), typeof(GanttGroupItem), new PropertyMetadata(default(int)));
+            "Order", typeof(int), typeof(GanttGroupItem), new FrameworkPropertyMetadata(default(int), FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange));
 
         public int Order
         {
@@ -43,30 +48,9 @@ namespace GanttSample
             set { SetValue(OrderProperty, value); }
         }
 
-        public bool IsItemVisible { get; set; }
-
-        public static readonly DependencyProperty MinDateProperty =
-            DependencyProperty.Register("MinDate", typeof(DateTime), typeof(GanttGroupItem), new FrameworkPropertyMetadata(DateTime.Now.AddHours(-8), FrameworkPropertyMetadataOptions.AffectsMeasure));
-
-        public static readonly DependencyProperty MaxDateProperty =
-       DependencyProperty.Register("MaxDate", typeof(DateTime), typeof(GanttGroupItem), new FrameworkPropertyMetadata(DateTime.Now.AddHours(8), FrameworkPropertyMetadataOptions.AffectsMeasure));
-
-        public DateTime MaxDate
-        {
-            get { return (DateTime)GetValue(MaxDateProperty); }
-            set { SetValue(MaxDateProperty, value); }
-        }
-
-        public DateTime MinDate
-        {
-            get { return (DateTime)GetValue(MinDateProperty); }
-            set { SetValue(MinDateProperty, value); }
-        }
-
         public GanttGroupItem()
         {
             DefaultStyleKey = typeof(GanttGroupItem);
-            IsItemVisible = true;
         }
 
         protected override DependencyObject GetContainerForItemOverride()
@@ -79,7 +63,16 @@ namespace GanttSample
         {
             base.PrepareContainerForItemOverride(element, item);
             var ganttGroupItem = (GanttItem)element;
-            RecalculateOrder(ganttGroupItem);            
+            RecalculateOrder(ganttGroupItem);
+        }
+
+        protected override void OnItemsChanged(NotifyCollectionChangedEventArgs e)
+        {
+            base.OnItemsChanged(e);
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                OnNewItemAdded();
+            }
         }
 
         void RecalculateOrder(GanttItem item)
@@ -94,9 +87,34 @@ namespace GanttSample
                 {
                     int minimumOrder = intersectedItems.Min(x => x.Order);
                     if (minimumOrder == 0)
-                        item.Order = intersectedItems.Max(x => x.Order) + 1;
+                    {
+                        var items = intersectedItems.Select(x => x.Order).OrderBy(x => x).ToList();
+                        if (items.Count > 1)
+                        {
+                            bool wasSet = false;
+                            for (int i = 0; i < items.Count - 1; i++)
+                            {
+                                if (items[i + 1] - items[i] > 1)
+                                {
+                                    item.Order = items[i] + 1;
+                                    wasSet = true;
+                                    break;
+                                }
+                            }
+                            if (wasSet == false)
+                            {
+                                item.Order = items.Last() + 1;
+                            }
+                        }
+                        else
+                        {
+                            item.Order = items.Count;
+                        }
+                    }
                     else
-                        item.Order = minimumOrder - 1;
+                    {
+                        item.Order = 0;
+                    }
 
                     break;
                 }

@@ -15,10 +15,12 @@ namespace GanttSample
         readonly DoubleCollection strokeCollection = new DoubleCollection(new List<double> { 2 });
 
         public static readonly DependencyProperty MinDateProperty =
-            DependencyProperty.Register("MinDate", typeof(DateTime), typeof(GanttControl), new FrameworkPropertyMetadata(DateTime.Now.AddHours(-8), FrameworkPropertyMetadataOptions.AffectsMeasure));
+            DependencyProperty.Register("MinDate", typeof(DateTime), typeof(GanttControl), new FrameworkPropertyMetadata(DateTime.Now.AddHours(-8),
+                FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange | FrameworkPropertyMetadataOptions.AffectsRender | FrameworkPropertyMetadataOptions.AffectsParentArrange | FrameworkPropertyMetadataOptions.AffectsParentMeasure));
 
         public static readonly DependencyProperty MaxDateProperty =
-       DependencyProperty.Register("MaxDate", typeof(DateTime), typeof(GanttControl), new FrameworkPropertyMetadata(DateTime.Now.AddHours(8), FrameworkPropertyMetadataOptions.AffectsMeasure));
+       DependencyProperty.Register("MaxDate", typeof(DateTime), typeof(GanttControl), new FrameworkPropertyMetadata(DateTime.Now.AddHours(8),
+           FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange | FrameworkPropertyMetadataOptions.AffectsRender | FrameworkPropertyMetadataOptions.AffectsParentArrange | FrameworkPropertyMetadataOptions.AffectsParentMeasure));
 
         public DateTime MaxDate
         {
@@ -73,6 +75,7 @@ namespace GanttSample
 
             base.PrepareContainerForItemOverride(element, item);
             var ganttGroupItem = (GanttGroupItem)element;
+            ganttGroupItem.OnNewItemAdded += () => RecalculateOrder(ganttGroupItem);
             ganttGroupItem.ItemsSource = (IEnumerable)item.GetType().GetProperty(ChildrenPropertyName).GetValue(item, null);
             RecalculateOrder(ganttGroupItem);
         }

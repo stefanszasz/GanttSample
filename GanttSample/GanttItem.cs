@@ -16,15 +16,6 @@ namespace GanttSample
             set { SetValue(TextProperty, value); }
         }
 
-        public static readonly DependencyProperty GroupNameProperty = DependencyProperty.Register(
-            "GroupName", typeof (string), typeof (GanttItem), new PropertyMetadata(default(string)));
-
-        public string GroupName
-        {
-            get { return (string) GetValue(GroupNameProperty); }
-            set { SetValue(GroupNameProperty, value); }
-        }
-
         public static readonly DependencyProperty ColorProperty = DependencyProperty.Register(
             "Color", typeof(Brush), typeof(GanttItem), new PropertyMetadata(default(Brush)));
 
@@ -35,7 +26,7 @@ namespace GanttSample
         }
 
         public static readonly DependencyProperty StartDateProperty = DependencyProperty.Register(
-            "StartDate", typeof(DateTime), typeof(GanttItem), new PropertyMetadata(default(DateTime)));
+            "StartDate", typeof(DateTime), typeof(GanttItem), new FrameworkPropertyMetadata(DateTime.Now.AddHours(0), FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange));
 
         public DateTime StartDate
         {
@@ -44,7 +35,7 @@ namespace GanttSample
         }
 
         public static readonly DependencyProperty EndDateProperty = DependencyProperty.Register(
-            "EndDate", typeof(DateTime), typeof(GanttItem), new PropertyMetadata(default(DateTime)));
+            "EndDate", typeof(DateTime), typeof(GanttItem), new FrameworkPropertyMetadata(DateTime.Now.AddHours(0), FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange));
 
         public DateTime EndDate
         {
@@ -77,7 +68,7 @@ namespace GanttSample
 
         public override string ToString()
         {
-            return string.Format("{0}, StartDate: {1}, EndDate: {2}, Text: {3}", base.ToString(), StartDate, EndDate, Text);
+            return string.Format("{0}, StartDate: {1}, EndDate: {2}, Tooltip: {3}", Text, StartDate, EndDate, ToolTip);
         }
     }
 }

@@ -50,8 +50,8 @@
         <ganttSample:GanttControl x:Name="GanttControl" Grid.Row="3" ChildrenPropertyName="Processes">
             <ganttSample:GanttControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <ganttSample:MainGanttPanel MinDate="{Binding MinDate, Mode=OneWay, ElementName=GanttControl}"
-                                               MaxDate="{Binding MaxDate, Mode=OneWay, ElementName=GanttControl}" />
+                    <ganttSample:MainGanttPanel MinDate="{Binding MinDate, Mode=TwoWay, ElementName=GanttControl}"
+                                               MaxDate="{Binding MaxDate, Mode=TwoWay, ElementName=GanttControl}" />
                 </ItemsPanelTemplate>
             </ganttSample:GanttControl.ItemsPanel>
             <ganttSample:GanttControl.Template>
@@ -69,8 +69,6 @@
                 <Style TargetType="ganttSample:GanttGroupItem">
                     <Setter Property="VerticalAlignment"
                             Value="Top" />
-                    <Setter Property="Background"
-                            Value="Gray" />
                     <Setter Property="Header"
                             Value="{Binding Header}" />
                     <Setter Property="StartDate"
@@ -82,30 +80,32 @@
                     <Setter Property="ItemsPanel">
                         <Setter.Value>
                             <ItemsPanelTemplate>
-                                <ganttSample:GanttItemPanel MinDate="{Binding StartDate, Mode=OneWay}"
-                                                            MaxDate="{Binding EndDate, Mode=OneWay}" />
+                                <ganttSample:GanttItemPanel MinDate="{Binding StartDate, Mode=TwoWay}"
+                                                            MaxDate="{Binding EndDate, Mode=TwoWay}" />
                             </ItemsPanelTemplate>
                         </Setter.Value>
                     </Setter>
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="{x:Type ganttSample:GanttGroupItem}">
-                                <Grid Background="{TemplateBinding Background}">
-                                    <Grid>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition />
-                                        </Grid.RowDefinitions>
-                                        <TextBlock Text="{TemplateBinding Header}" 
-                                                   Foreground="GhostWhite"/>
-                                        <ScrollViewer VerticalScrollBarVisibility="Auto"
+                                <Border BorderThickness="2"
+                                        BorderBrush="DarkBlue">
+                                    <Grid Background="{TemplateBinding Background}">                                          
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition />
+                                            </Grid.RowDefinitions>
+                                            <TextBlock Text="{TemplateBinding Header}" 
+                                                   />
+                                            <ScrollViewer VerticalScrollBarVisibility="Auto"
                                                       Grid.Row="1"
                                                       HorizontalScrollBarVisibility="Auto">
-                                            <ItemsPresenter />
-                                        </ScrollViewer>
+                                                <ItemsPresenter />
+                                            </ScrollViewer>
+                                        </Grid>
                                     </Grid>
-
-                                </Grid>
+                                </Border>
                             </ControlTemplate>
                         </Setter.Value>
                     </Setter>
