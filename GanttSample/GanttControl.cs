@@ -95,21 +95,7 @@ namespace GanttSample
         {
             var ganttItems = Items.OfType<object>().Select(x => ItemContainerGenerator.ContainerFromItem(x)).OfType<GanttGroupItem>().OrderBy(x => x.StartDate).ToList();
             var intersectedItems = item.IntersectsWith(ganttItems).ToArray();
-            foreach (var intersectedItem in intersectedItems)
-            {
-                if (intersectedItem.Order == item.Order)
-                    item.Order++;
-                else
-                {
-                    int minimumOrder = intersectedItems.Min(x => x.Order);
-                    if (minimumOrder == 0)
-                        item.Order = intersectedItems.Max(x => x.Order) + 1;
-                    else
-                        item.Order = minimumOrder - 1;
-
-                    break;
-                }
-            }
+            ReorderingItemsHelper.ReorderItemsBasedOnDate(item, intersectedItems);
         }
 
         public override void OnApplyTemplate()

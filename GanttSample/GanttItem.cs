@@ -5,7 +5,7 @@ using System.Windows.Media;
 
 namespace GanttSample
 {
-    public class GanttItem : ListBoxItem
+    public class GanttItem : ListBoxItem, IOrderedDateItem
     {
         public static readonly DependencyProperty TextProperty = DependencyProperty.Register(
             "Text", typeof(string), typeof(GanttItem), new PropertyMetadata(default(string)));

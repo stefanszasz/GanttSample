@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Windows;
@@ -6,7 +7,7 @@ using System.Windows.Controls;
 
 namespace GanttSample
 {
-    public class GanttGroupItem : ListBox
+    public class GanttGroupItem : ListBox, IOrderedDateItem
     {
         public event Action OnNewItemAdded = delegate { };
 
@@ -79,46 +80,7 @@ namespace GanttSample
         {
             var ganttItems = Items.OfType<object>().Select(x => ItemContainerGenerator.ContainerFromItem(x)).OfType<GanttItem>().OrderBy(x => x.StartDate).ToList();
             var intersectedItems = item.IntersectsWith(ganttItems).ToArray();
-            foreach (var intersectedItem in intersectedItems)
-            {
-                if (intersectedItem.Order == item.Order)
-                    item.Order++;
-                else
-                {
-                    int minimumOrder = intersectedItems.Min(x => x.Order);
-                    if (minimumOrder == 0)
-                    {
-                        var items = intersectedItems.Select(x => x.Order).OrderBy(x => x).ToList();
-                        if (items.Count > 1)
-                        {
-                            bool wasSet = false;
-                            for (int i = 0; i < items.Count - 1; i++)
-                            {
-                                if (items[i + 1] - items[i] > 1)
-                                {
-                                    item.Order = items[i] + 1;
-                                    wasSet = true;
-                                    break;
-                                }
-                            }
-                            if (wasSet == false)
-                            {
-                                item.Order = items.Last() + 1;
-                            }
-                        }
-                        else
-                        {
-                            item.Order = items.Count;
-                        }
-                    }
-                    else
-                    {
-                        item.Order = 0;
-                    }
-
-                    break;
-                }
-            }
+            ReorderingItemsHelper.ReorderItemsBasedOnDate(item, intersectedItems);
         }
     }
 }

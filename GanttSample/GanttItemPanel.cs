@@ -8,17 +8,12 @@ namespace GanttSample
     public class GanttItemPanel : Panel
     {
         public static readonly DependencyProperty MaxDateProperty =
-            DependencyProperty.Register("MaxDate", typeof(DateTime), typeof(GanttItemPanel), new FrameworkPropertyMetadata(DateTime.Now.AddDays(0), 
+            DependencyProperty.Register("MaxDate", typeof(DateTime), typeof(GanttItemPanel), new FrameworkPropertyMetadata(DateTime.Now.AddDays(0),
                 FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange | FrameworkPropertyMetadataOptions.AffectsRender | FrameworkPropertyMetadataOptions.AffectsParentArrange | FrameworkPropertyMetadataOptions.AffectsParentMeasure));
 
         public static readonly DependencyProperty MinDateProperty =
             DependencyProperty.Register("MinDate", typeof(DateTime), typeof(GanttItemPanel), new FrameworkPropertyMetadata(DateTime.Now.AddHours(0),
-                FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange | FrameworkPropertyMetadataOptions.AffectsRender | FrameworkPropertyMetadataOptions.AffectsParentArrange | FrameworkPropertyMetadataOptions.AffectsParentMeasure, PropertyChangedCallback));
-
-        private static void PropertyChangedCallback(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
-        {
-
-        }
+                FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange | FrameworkPropertyMetadataOptions.AffectsRender | FrameworkPropertyMetadataOptions.AffectsParentArrange | FrameworkPropertyMetadataOptions.AffectsParentMeasure));
 
         public DateTime MaxDate
         {

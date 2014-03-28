@@ -53,6 +53,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ReorderingItemsHelper.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -63,6 +64,7 @@
     </Compile>
     <Compile Include="GanttItemPanel.cs" />
     <Compile Include="IHaveStartAndEndDate.cs" />
+    <Compile Include="IOrderedDateItem.cs" />
     <Compile Include="ProcessExtensions.cs" />
     <Compile Include="GanttControl.cs" />
     <Compile Include="GanttGroupItem.cs" />
