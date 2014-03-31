@@ -44,7 +44,7 @@ namespace GanttSample
         }
 
         public static readonly DependencyProperty OrderProperty = DependencyProperty.Register(
-            "Order", typeof(int), typeof(GanttItem), new PropertyMetadata(default(int)));
+            "Order", typeof(int), typeof(GanttItem), new FrameworkPropertyMetadata(default(int), FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange | FrameworkPropertyMetadataOptions.AffectsParentArrange | FrameworkPropertyMetadataOptions.AffectsParentMeasure | FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
         public int Order
         {
@@ -53,12 +53,7 @@ namespace GanttSample
         }
 
         public static readonly DependencyProperty IsItemVisibleProperty = DependencyProperty.Register(
-            "IsItemVisible", typeof(bool), typeof(GanttItem), new FrameworkPropertyMetadata(true, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange | FrameworkPropertyMetadataOptions.AffectsParentArrange | FrameworkPropertyMetadataOptions.AffectsParentMeasure | FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, PropertyChangedCallback));
-
-        private static void PropertyChangedCallback(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
-        {
-            
-        }
+            "IsItemVisible", typeof(bool), typeof(GanttItem), new FrameworkPropertyMetadata(true, FrameworkPropertyMetadataOptions.AffectsParentArrange | FrameworkPropertyMetadataOptions.AffectsParentMeasure | FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
         public bool IsItemVisible
         {
@@ -69,7 +64,10 @@ namespace GanttSample
         public GanttItem()
         {
             DefaultStyleKey = typeof(GanttItem);
+            Id = Guid.NewGuid();
         }
+
+        public Guid Id { get; private set; }
 
         public override string ToString()
         {

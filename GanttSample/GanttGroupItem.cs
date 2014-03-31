@@ -4,6 +4,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace GanttSample
 {
@@ -49,13 +50,13 @@ namespace GanttSample
             set { SetValue(OrderProperty, value); }
         }
 
+        public Guid Id { get; private set; }
+
         public GanttGroupItem()
         {
             DefaultStyleKey = typeof(GanttGroupItem);
             Id = Guid.NewGuid();
         }
-
-        public Guid Id { get; private set; }
 
         protected override DependencyObject GetContainerForItemOverride()
         {
@@ -84,6 +85,27 @@ namespace GanttSample
             var ganttItems = Items.OfType<object>().Select(x => ItemContainerGenerator.ContainerFromItem(x)).OfType<GanttItem>().OrderBy(x => x.StartDate).ToList();
             var intersectedItems = item.IntersectsWith(ganttItems).ToArray();
             ReorderingItemsHelper.ReorderItemsBasedOnDate(item, intersectedItems);
+        }
+
+        private static T GetVisualChild<T>(DependencyObject parent) where T : Visual
+        {
+            T child = default(T);
+
+            int numVisuals = VisualTreeHelper.GetChildrenCount(parent);
+            for (int i = 0; i < numVisuals; i++)
+            {
+                Visual v = (Visual)VisualTreeHelper.GetChild(parent, i);
+                child = v as T;
+                if (child == null)
+                {
+                    child = GetVisualChild<T>(v);
+                }
+                if (child != null)
+                {
+                    break;
+                }
+            }
+            return child;
         }
     }
 }

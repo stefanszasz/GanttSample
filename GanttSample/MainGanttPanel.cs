@@ -44,7 +44,7 @@ namespace GanttSample
             }
 
             var totalHeight = maxHeight + desiredHeight;
-            return new Size(0, totalHeight);
+            return new Size(0, totalHeight + 10);
         }
 
         protected override Size ArrangeOverride(Size finalSize)
@@ -72,17 +72,20 @@ namespace GanttSample
             double width = childDuration.Ticks * pixelsPerTick;
 
             double y = child.DesiredSize.Height * child.Order;
-            double newHeight = y;
+            double newY = y;
             if (Math.Abs(y) > 0.1)
             {
                 double existingHeight = itemsHeight.Sum(x => x.Value);
                 double tempHeight = Math.Max(y, existingHeight) - child.DesiredSize.Height;
-                newHeight = Math.Max(tempHeight, newHeight);
+                newY = Math.Max(tempHeight, newY);
             }
 
             itemsHeight[child.Id] = child.DesiredSize.Height;
-            
-            var finalRect = new Rect(offset, newHeight, width, elementHeight);
+
+            if (Math.Abs(newY) > 0.01)
+                newY += 10;
+
+            var finalRect = new Rect(offset, newY, width, elementHeight);
             return finalRect;
         }
     }

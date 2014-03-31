@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -30,16 +31,36 @@ namespace GanttSample
         protected override Size MeasureOverride(Size availableSize)
         {
             double desiredHeight = 0;
-            var ganttItems = Children.OfType<GanttItem>().Where(x => x.IsItemVisible).ToArray();
+            var ganttItems = Children.OfType<GanttItem>().ToArray();
             foreach (var ganttItem in ganttItems)
             {
+                if (ganttItem.IsItemVisible == false)
+                {
+                    bool currentRowHasVisibleItems = ganttItems.Any(x => x.IsItemVisible && x.Order == ganttItem.Order && x.Id != ganttItem.Id);
+                    if (currentRowHasVisibleItems == false)
+                    {
+                        GanttItem item = ganttItem;
+                        IEnumerable<GanttItem> itemsWithGreaterOrder = ganttItems.Where(x => x.Order > item.Order);
+                        foreach (GanttItem orderItem in itemsWithGreaterOrder)
+                            orderItem.Order--;
+                    }
+
+                    ganttItem.Visibility = Visibility.Collapsed;
+                    continue;
+                }
+
                 ganttItem.Measure(availableSize);
                 desiredHeight = ganttItem.DesiredSize.Height;
             }
 
-            int max = ganttItems.Max(x => x.Order) + 1;
+            GanttItem[] visibleItems = ganttItems.Where(x => x.IsItemVisible).ToArray();
+            if (visibleItems.Any() == false)
+                return new Size(0, 0);
 
-            return new Size(0, desiredHeight * max);
+            int max = visibleItems.Max(x => x.Order) + 1;
+
+            double height = desiredHeight * max;
+            return new Size(0, height);
         }
 
         protected override Size ArrangeOverride(Size finalSize)
@@ -47,7 +68,7 @@ namespace GanttSample
             double range = (MaxDate - MinDate).Ticks;
             double pixelsPerTick = finalSize.Width / range;
 
-            var ganttItems = Children.OfType<GanttItem>().Where(x => x.IsItemVisible);
+            var ganttItems = Children.OfType<GanttItem>();
             foreach (var ganttItem in ganttItems)
             {
                 Rect rect = ArrangeChild(ganttItem, MinDate, pixelsPerTick, finalSize.Height);
@@ -72,6 +93,11 @@ namespace GanttSample
 
             if (width < 0)
                 width = 0;
+
+            if (child.IsItemVisible == false)
+            {
+                return new Rect(0, 0, 0, 0);
+            }
 
             var finalRect = new Rect(offset, y, width, elementHeight);
             return finalRect;
