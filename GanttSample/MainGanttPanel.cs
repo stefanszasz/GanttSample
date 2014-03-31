@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -7,6 +8,8 @@ namespace GanttSample
 {
     public class MainGanttPanel : Panel
     {
+        readonly Dictionary<Guid, double> itemsHeight = new Dictionary<Guid, double>();
+
         public static readonly DependencyProperty MaxDateProperty =
             DependencyProperty.Register("MaxDate", typeof(DateTime), typeof(MainGanttPanel), new FrameworkPropertyMetadata(DateTime.Now.AddDays(0), FrameworkPropertyMetadataOptions.AffectsMeasure));
 
@@ -40,7 +43,7 @@ namespace GanttSample
                     maxHeight = height;
             }
 
-            var totalHeight = maxHeight + desiredHeight + 50;
+            var totalHeight = maxHeight + desiredHeight;
             return new Size(0, totalHeight);
         }
 
@@ -69,8 +72,17 @@ namespace GanttSample
             double width = childDuration.Ticks * pixelsPerTick;
 
             double y = child.DesiredSize.Height * child.Order;
+            double newHeight = y;
+            if (Math.Abs(y) > 0.1)
+            {
+                double existingHeight = itemsHeight.Sum(x => x.Value);
+                double tempHeight = Math.Max(y, existingHeight) - child.DesiredSize.Height;
+                newHeight = Math.Max(tempHeight, newHeight);
+            }
 
-            var finalRect = new Rect(offset, y + 50, width, elementHeight);
+            itemsHeight[child.Id] = child.DesiredSize.Height;
+            
+            var finalRect = new Rect(offset, newHeight, width, elementHeight);
             return finalRect;
         }
     }

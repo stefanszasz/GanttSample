@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace GanttSample
 {
-    public static class ProcessExtensions
+    public static class OrderedDateItemExtensions
     {
         public static IEnumerable<IOrderedDateItem> IntersectsWith(this IOrderedDateItem processItem, IEnumerable<IOrderedDateItem> items)
         {

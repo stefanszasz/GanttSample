@@ -61,14 +61,49 @@ namespace GanttSample
         }
     }
 
-    public class Process : IHaveStartAndEndDate
+    public class Process : IHaveStartAndEndDate, INotifyPropertyChanged
     {
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
+        private DateTime startDate;
+        private DateTime endDate;
+        private bool isItemVisible;
+
+        public DateTime StartDate
+        {
+            get { return startDate; }
+            set
+            {
+                if (value.Equals(startDate)) return;
+                startDate = value;
+                OnPropertyChanged("StartDate");
+            }
+        }
+
+        public DateTime EndDate
+        {
+            get { return endDate; }
+            set
+            {
+                if (value.Equals(endDate)) return;
+                endDate = value;
+                OnPropertyChanged("EndDate");
+            }
+        }
+
         public string Text { get; set; }
         public string Hint { get; set; }
         public Brush Color { get; set; }
-        public bool IsItemVisible { get; set; }
+
+        public bool IsItemVisible
+        {
+            get { return isItemVisible; }
+            set
+            {
+                if (value.Equals(isItemVisible)) return;
+                isItemVisible = value;
+                OnPropertyChanged("IsItemVisible");
+            }
+        }
+
         public string GroupName { get; set; }
 
         public Process()
@@ -80,6 +115,15 @@ namespace GanttSample
         public override string ToString()
         {
             return string.Format("StartDate: {0}, EndDate: {1}, Text: {2}", StartDate, EndDate, Text);
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            PropertyChangedEventHandler handler = PropertyChanged;
+            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

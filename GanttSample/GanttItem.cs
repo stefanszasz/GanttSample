@@ -53,7 +53,12 @@ namespace GanttSample
         }
 
         public static readonly DependencyProperty IsItemVisibleProperty = DependencyProperty.Register(
-            "IsItemVisible", typeof(bool), typeof(GanttItem), new FrameworkPropertyMetadata(true, FrameworkPropertyMetadataOptions.AffectsMeasure));
+            "IsItemVisible", typeof(bool), typeof(GanttItem), new FrameworkPropertyMetadata(true, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange | FrameworkPropertyMetadataOptions.AffectsParentArrange | FrameworkPropertyMetadataOptions.AffectsParentMeasure | FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, PropertyChangedCallback));
+
+        private static void PropertyChangedCallback(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
+        {
+            
+        }
 
         public bool IsItemVisible
         {

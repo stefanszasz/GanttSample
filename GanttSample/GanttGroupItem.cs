@@ -52,7 +52,10 @@ namespace GanttSample
         public GanttGroupItem()
         {
             DefaultStyleKey = typeof(GanttGroupItem);
+            Id = Guid.NewGuid();
         }
+
+        public Guid Id { get; private set; }
 
         protected override DependencyObject GetContainerForItemOverride()
         {

@@ -61,6 +61,15 @@ namespace GanttSample
             set { SetValue(DateFormatProperty, value); }
         }
 
+        public static readonly DependencyProperty SelectedGanttItemProperty = DependencyProperty.Register(
+            "SelectedGanttItem", typeof(object), typeof(GanttControl), new FrameworkPropertyMetadata(default(object), FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+        public object SelectedGanttItem
+        {
+            get { return (object)GetValue(SelectedGanttItemProperty); }
+            set { SetValue(SelectedGanttItemProperty, value); }
+        }
+
         private Canvas canvas;
 
         public GanttControl()
@@ -75,9 +84,19 @@ namespace GanttSample
 
             base.PrepareContainerForItemOverride(element, item);
             var ganttGroupItem = (GanttGroupItem)element;
-            ganttGroupItem.OnNewItemAdded += () => RecalculateOrder(ganttGroupItem);
+            ganttGroupItem.SelectionChanged += ganttGroupItem_SelectionChanged;
+            ganttGroupItem.OnNewItemAdded += () =>
+            {
+                InvalidateMeasure();
+                RecalculateOrder(ganttGroupItem);
+            };
             ganttGroupItem.ItemsSource = (IEnumerable)item.GetType().GetProperty(ChildrenPropertyName).GetValue(item, null);
             RecalculateOrder(ganttGroupItem);
+        }
+
+        void ganttGroupItem_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            SelectedGanttItem = e.AddedItems.Count > 0 ? e.AddedItems[0] : null;
         }
 
         void GanttControl_Loaded(object sender, RoutedEventArgs e)

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
@@ -104,14 +105,24 @@ namespace GanttSample
             }*/
 
             var processChain = new ProcessChain("PC1", observableCollection);
-            var chain = new ProcessChain("PC2", new ObservableCollection<Process>(observableCollection));
-            processChains = new ObservableCollection<ProcessChain> { processChain};
+            var processes = new ObservableCollection<Process>(observableCollection);
+            //processes[0].StartDate = processes[0].StartDate.AddMinutes(20);
+            //processes[2].StartDate = processes[2].StartDate.AddHours(3);
+            var chain = new ProcessChain("PC2", processes);
+            processChains = new ObservableCollection<ProcessChain> { processChain, chain };
 
             GanttControl.ItemsSource = processChains;
         }
 
         private int clickCount;
         private ObservableCollection<ProcessChain> processChains = new ObservableCollection<ProcessChain>();
+        private Process selectedProcess;
+
+        public Process SelectedProcess
+        {
+            get { return selectedProcess; }
+            set { selectedProcess = value; }
+        }
 
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
@@ -146,6 +157,12 @@ namespace GanttSample
         private void MoveRightButton_OnClick(object sender, RoutedEventArgs e)
         {
             GanttControl.MoveRight();
+        }
+
+        private void ButtonBase1_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (SelectedProcess != null)
+                SelectedProcess.IsItemVisible = false;
         }
     }
 }

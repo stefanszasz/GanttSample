@@ -14,7 +14,11 @@
         </Grid.RowDefinitions>
 
         <Button Grid.Row="0"
+                HorizontalAlignment="Left"
                 Click="ButtonBase_OnClick">Add</Button>
+        <Button Grid.Row="0"
+                HorizontalAlignment="Right"
+                Click="ButtonBase1_OnClick">Hide some</Button>
         <Button Grid.Row="1"
                 Width="150"
                 Content="Zoom in"
@@ -47,7 +51,9 @@
                 Name="ChangeDateFormatButton"
                 Click="ChangeDateFormatButton_OnClick" />
 
-        <ganttSample:GanttControl x:Name="GanttControl" Grid.Row="3" ChildrenPropertyName="Processes">
+        <ganttSample:GanttControl x:Name="GanttControl" Grid.Row="3" 
+                                  SelectedGanttItem="{Binding SelectedProcess, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ganttSample:MainWindow}}}"
+                                  ChildrenPropertyName="Processes">
             <ganttSample:GanttControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <ganttSample:MainGanttPanel MinDate="{Binding MinDate, Mode=TwoWay, ElementName=GanttControl}"
@@ -57,9 +63,12 @@
             <ganttSample:GanttControl.Template>
                 <ControlTemplate>
                     <Grid>
-                        <Canvas x:Name="PART_Background" />
-                        <ScrollViewer VerticalScrollBarVisibility="Auto"
-                                      HorizontalScrollBarVisibility="Auto">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="50"/>
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Canvas x:Name="PART_Background" Grid.RowSpan="2" />
+                        <ScrollViewer Grid.Row="1">
                             <ItemsPresenter />
                         </ScrollViewer>
                     </Grid>
@@ -88,7 +97,7 @@
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="{x:Type ganttSample:GanttGroupItem}">
-                                <Border BorderThickness="2"
+                                <Border BorderThickness="1"
                                         BorderBrush="DarkBlue">
                                     <Grid Background="{TemplateBinding Background}">
                                         <Grid>
@@ -96,8 +105,7 @@
                                                 <RowDefinition Height="Auto"/>
                                                 <RowDefinition />
                                             </Grid.RowDefinitions>
-                                            <TextBlock Text="{TemplateBinding Header}" 
-                                                   />
+                                            <TextBlock Text="{TemplateBinding Header}" Background="LavenderBlush" />
                                             <ScrollViewer VerticalScrollBarVisibility="Auto"
                                                       Grid.Row="1"
                                                       HorizontalScrollBarVisibility="Auto">
@@ -118,7 +126,7 @@
                                 <Setter Property="StartDate" Value="{Binding StartDate}" />
                                 <Setter Property="ToolTip" Value="{Binding Hint}" />
                                 <Setter Property="EndDate" Value="{Binding EndDate}" />
-                                <Setter Property="IsItemVisible" Value="{Binding IsItemVisible}" />
+                                <Setter Property="IsItemVisible" Value="{Binding IsItemVisible, UpdateSourceTrigger=PropertyChanged}" />
                                 <Setter Property="Template">
                                     <Setter.Value>
                                         <ControlTemplate TargetType="{x:Type ganttSample:GanttItem}">
