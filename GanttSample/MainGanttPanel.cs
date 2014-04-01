@@ -8,6 +8,8 @@ namespace GanttSample
 {
     public class MainGanttPanel : Panel
     {
+        private const int TopMargin = 10;
+
         readonly Dictionary<Guid, double> itemsHeight = new Dictionary<Guid, double>();
 
         public static readonly DependencyProperty MaxDateProperty =
@@ -31,20 +33,15 @@ namespace GanttSample
         protected override Size MeasureOverride(Size availableSize)
         {
             double maxHeight = 0;
-            double desiredHeight = 0;
 
             var ganttItems = Children.OfType<GanttGroupItem>();
             foreach (var ganttItem in ganttItems)
             {
                 ganttItem.Measure(availableSize);
-                desiredHeight = ganttItem.DesiredSize.Height;
-                double height = ganttItem.DesiredSize.Height * ganttItem.Order;
-                if (height > maxHeight)
-                    maxHeight = height;
+                maxHeight += ganttItem.DesiredSize.Height;
             }
 
-            var totalHeight = maxHeight + desiredHeight;
-            return new Size(0, totalHeight + 10);
+            return new Size(0, maxHeight + TopMargin);
         }
 
         protected override Size ArrangeOverride(Size finalSize)
@@ -83,7 +80,7 @@ namespace GanttSample
             itemsHeight[child.Id] = child.DesiredSize.Height;
 
             if (Math.Abs(newY) > 0.01)
-                newY += 10;
+                newY += TopMargin;
 
             var finalRect = new Rect(offset, newY, width, elementHeight);
             return finalRect;
