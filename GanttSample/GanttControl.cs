@@ -137,7 +137,7 @@ namespace GanttSample
             }
 
             double range = (MaxDate - MinDate).Ticks;
-            double pixelsPerTick = size.Width / range;
+            double pixelsPerTick = (size.Width - 8) / range;
             const int timeSliceMinutes = 15;
 
             canvas.Children.Clear();
