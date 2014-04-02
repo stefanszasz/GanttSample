@@ -63,6 +63,9 @@
         <ganttSample:GanttControl x:Name="GanttControl" Grid.Row="3" 
                                   SelectedGanttItem="{Binding SelectedProcess, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ganttSample:MainWindow}}}"
                                   ChildrenPropertyName="Processes">
+            <Control.Resources>
+                <ganttSample:ForegroundColorConverter x:Key="ForegroundColorConverter" />
+            </Control.Resources>
             <ganttSample:GanttControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <ganttSample:MainGanttPanel MinDate="{Binding MinDate, Mode=TwoWay, ElementName=GanttControl}"
@@ -161,7 +164,7 @@
                                                                 Value="DarkBlue" />
                                                         <Setter Property="Foreground"
                                                                 TargetName="TextBlock"
-                                                                Value="GhostWhite" />
+                                                                Value="{Binding Path=Background, ElementName=Border, Converter={StaticResource ForegroundColorConverter}}" />
                                                     </Trigger.Setters>
                                                 </Trigger>
                                             </ControlTemplate.Triggers>
