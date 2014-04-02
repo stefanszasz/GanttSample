@@ -10,6 +10,10 @@ using System.Windows.Shapes;
 namespace GanttSample
 {
     [TemplatePart(Name = "PART_Background", Type = typeof(Canvas))]
+    [TemplatePart(Name = "PART_MoveRightButton", Type = typeof(Button))]
+    [TemplatePart(Name = "PART_MoveLeftButton", Type = typeof(Button))]
+    [TemplatePart(Name = "PART_ZoomInButton", Type = typeof(Button))]
+    [TemplatePart(Name = "PART_ZoomOutButton", Type = typeof(Button))]
     public class GanttControl : ListBox
     {
         readonly DoubleCollection strokeCollection = new DoubleCollection(new List<double> { 2 });
@@ -120,6 +124,17 @@ namespace GanttSample
         public override void OnApplyTemplate()
         {
             canvas = (Canvas)GetTemplateChild("PART_Background");
+            var moveRightButton = (Button) GetTemplateChild("PART_MoveRightButton");
+            moveRightButton.Click += (s, ea) => MoveRight();
+
+            var moveLeftButton = (Button) GetTemplateChild("PART_MoveLeftButton");
+            moveLeftButton.Click += (s, ea) => MoveLeft();
+
+            var zoomInButton = (Button) GetTemplateChild("PART_ZoomInButton");
+            zoomInButton.Click += (s, ea) => ZoomIn();
+
+            var zoomOutButton = (Button) GetTemplateChild("PART_ZoomOutButton");
+            zoomOutButton.Click += (s, ea) => ZoomOut();
         }
 
         protected override Size ArrangeOverride(Size arrangeBounds)
@@ -214,14 +229,14 @@ namespace GanttSample
 
         public void ZoomIn()
         {
-            MinDate = MinDate.AddHours(-1);
-            MaxDate = MaxDate.AddHours(1);
+            MinDate = MinDate.AddHours(1);
+            MaxDate = MaxDate.AddHours(-1);
         }
 
         public void ZoomOut()
         {
-            MinDate = MinDate.AddHours(1);
-            MaxDate = MaxDate.AddHours(-1);
+            MinDate = MinDate.AddHours(-1);
+            MaxDate = MaxDate.AddHours(1);
         }
 
         public void MoveLeft()

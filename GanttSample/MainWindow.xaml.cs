@@ -132,31 +132,6 @@ namespace GanttSample
             });
         }
 
-        private void DecreaseButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            GanttControl.ZoomOut();
-        }
-
-        private void IncreaseButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            GanttControl.ZoomIn();
-        }
-
-        private void ChangeDateFormatButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            GanttControl.DateFormat = "dddd hh:mm tt";
-        }
-
-        private void MoveLeftButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            GanttControl.MoveLeft();
-        }
-
-        private void MoveRightButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            GanttControl.MoveRight();
-        }
-
         private void ButtonBase1_OnClick(object sender, RoutedEventArgs e)
         {
             if (SelectedProcess != null)
